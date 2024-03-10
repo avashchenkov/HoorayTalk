@@ -1,4 +1,4 @@
-name: Build & deploy Nginx to VPS
+name: CI/CD for Nginx - VPS Deployment
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  deploy:
+  nginx-build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
