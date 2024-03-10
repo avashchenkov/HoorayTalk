@@ -30,13 +30,13 @@ jobs:
           push: true
           tags: your-dockerhub-username/nginx-container:latest
 
-      - name: Copy nginx and SSL configurations to VPS
+      - name: Copy nginx to VPS
         uses: appleboy/scp-action@v0.1.1
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
-          source: "infrastructure/nginx/ssl/"
+          source: "infrastructure/nginx/"
           target: "/opt/hooraytalk/nginx"
 
       - name: Deploy containers on VPS
@@ -47,5 +47,8 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd /opt/hooraytalk/nginx
+            echo "${{ secrets.SSL_CERTIFICATE }}" > ./ssl/hooraytalk.crt
+            echo "${{ secrets.SSL_KEY }}" > ./ssl/hooraytalk.key
             docker-compose down
+            docker-compose pull nginx-container
             docker-compose up -d
