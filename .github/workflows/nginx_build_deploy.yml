@@ -25,10 +25,10 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
-          context: .
+          context: ./infrastructure/nginx
           file: ./infrastructure/nginx/Dockerfile
           push: true
-          tags: your-dockerhub-username/nginx-container:latest
+          tags: artur741/nginx-container:latest
 
       - name: Copy nginx to VPS
         uses: appleboy/scp-action@v0.1.1
