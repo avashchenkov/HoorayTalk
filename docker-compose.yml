@@ -1,0 +1,43 @@
+version: '3.7'
+services:
+  nginx-proxy:
+    image: nginx:alpine
+    ports:
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - chat-service
+      - user-service
+      - delivery-service
+
+  chat-service:
+    image: chat-service-image
+    volumes:
+      - ./nginx/ssl:/etc/chat-service/ssl:ro
+    environment:
+      - SSL_CERT_FILE=/etc/chat-service/ssl/hooraytalk.crt
+      - SSL_KEY_FILE=/etc/chat-service/ssl/hooraytalk.key
+    expose:
+      - "8080"
+
+  user-service:
+    image: user-service-image
+    volumes:
+      - ./nginx/ssl:/etc/user-service/ssl:ro
+    environment:
+      - SSL_CERT_FILE=/etc/user-service/ssl/hooraytalk.crt
+      - SSL_KEY_FILE=/etc/user-service/ssl/hooraytalk.key
+    expose:
+      - "8081"
+
+  delivery-service:
+    image: delivery-service-image
+    volumes:
+      - ./nginx/ssl:/etc/delivery-service/ssl:ro
+    environment:
+      - SSL_CERT_FILE=/etc/delivery-service/ssl/hooraytalk.crt
+      - SSL_KEY_FILE=/etc/delivery-service/ssl/hooraytalk.key
+    expose:
+      - "8082"
