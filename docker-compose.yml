@@ -12,6 +12,8 @@ services:
       - chat-management-service
       - openai-service
       - discord-crm-service
+    networks:
+     - hooraytalk-network
 
   telegram-integration-service:
     image: telegram-integration-service-image
@@ -21,7 +23,9 @@ services:
       - SSL_CERT_FILE=/etc/telegram-integration-service/ssl/hooraytalk.crt
       - SSL_KEY_FILE=/etc/telegram-integration-service/ssl/hooraytalk.key
     expose:
-      - "8080"
+      - "443"
+    networks:
+      - hooraytalk-network
 
   chat-management-service:
     image: chat-management-service-image
@@ -31,7 +35,9 @@ services:
       - SSL_CERT_FILE=/etc/chat-management-service/ssl/hooraytalk.crt
       - SSL_KEY_FILE=/etc/chat-management-service/ssl/hooraytalk.key
     expose:
-      - "8081"
+      - "443"
+    networks:
+      - hooraytalk-network
 
   openai-service:
     image: openai-service-image
@@ -41,7 +47,9 @@ services:
       - SSL_CERT_FILE=/etc/openai-service/ssl/hooraytalk.crt
       - SSL_KEY_FILE=/etc/openai-service/ssl/hooraytalk.key
     expose:
-      - "8082"
+      - "443"
+    networks:
+      - hooraytalk-network
 
   discord-crm-service:
     image: discord-crm-service-image
@@ -51,4 +59,6 @@ services:
       - SSL_CERT_FILE=/etc/discord-crm-service/ssl/hooraytalk.crt
       - SSL_KEY_FILE=/etc/discord-crm-service/ssl/hooraytalk.key
     expose:
-      - "8083"
+      - "443"
+    networks:
+      - hooraytalk-network
