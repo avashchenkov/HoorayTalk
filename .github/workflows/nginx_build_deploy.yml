@@ -48,11 +48,12 @@ jobs:
           tags: artur741/nginx-container:latest
 
       - name: Copy nginx to VPS
-        uses: appleboy/scp-action@v0.1.1
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
+          port: 22
           source: "infrastructure/nginx/"
           target: "/opt/hooraytalk/nginx"
 
