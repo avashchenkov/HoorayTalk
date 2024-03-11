@@ -66,7 +66,7 @@ jobs:
           port: 22
           script: |
             cd /opt/hooraytalk
-            echo "${{ secrets.SSL_CERTIFICATE }}" > ./ssl/hooraytalk.crt # Error is related to wrong path (see the deployment structire on the VPS)
+            echo "${{ secrets.SSL_CERTIFICATE }}" > ./ssl/hooraytalk.crt
             echo "${{ secrets.SSL_KEY }}" > ./ssl/hooraytalk.key
             docker-compose down
             docker-compose pull nginx-container
