@@ -69,6 +69,7 @@ jobs:
             cd /opt/hooraytalk/infrastructure/nginx/
             echo "${{ secrets.SSL_CERTIFICATE }}" > ./ssl/hooraytalk.crt
             echo "${{ secrets.SSL_KEY }}" > ./ssl/hooraytalk.key
+            cd /opt/hooraytalk/
             docker compose down
             docker compose pull nginx-container
             docker compose up -d
