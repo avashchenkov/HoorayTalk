@@ -65,6 +65,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: 22
           script: |
+            mkdir -p /opt/hooraytalk/infrastructure/nginx/ssl
             cd /opt/hooraytalk/infrastructure/nginx/
             echo "${{ secrets.SSL_CERTIFICATE }}" > ./ssl/hooraytalk.crt
             echo "${{ secrets.SSL_KEY }}" > ./ssl/hooraytalk.key
