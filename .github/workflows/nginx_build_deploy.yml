@@ -55,7 +55,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: 22
           source: "infrastructure/nginx/"
-          target: "/opt/hooraytalk/infrastructure/nginx"
+          target: "/opt/hooraytalk/"
 
       - name: Deploy containers on VPS
         uses: appleboy/ssh-action@v1.0.3
