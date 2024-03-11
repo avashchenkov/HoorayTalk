@@ -1,4 +1,8 @@
 version: '3.7'
+networks:
+  hooraytalk-network:
+    name: hooraytalk-network
+    driver: bridge
 services:
   nginx-container:
     image: nginx:alpine
@@ -62,8 +66,3 @@ services:
   #     - "443"
   #   networks:
   #     - hooraytalk-network
-
-networks:
-  hooraytalk-network:
-    name: hooraytalk-network
-    driver: bridge
