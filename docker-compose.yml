@@ -62,3 +62,8 @@ services:
   #     - "443"
   #   networks:
   #     - hooraytalk-network
+
+networks:
+  hooraytalk-network:
+    name: hooraytalk-network
+    driver: bridge
