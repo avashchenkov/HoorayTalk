@@ -65,7 +65,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: 22
           script: |
-            cd /opt/hooraytalk
+            cd /opt/hooraytalk/infrastructure/nginx/
             echo "${{ secrets.SSL_CERTIFICATE }}" > ./ssl/hooraytalk.crt
             echo "${{ secrets.SSL_KEY }}" > ./ssl/hooraytalk.key
             docker-compose down
