@@ -55,7 +55,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: 22
           source: "infrastructure/nginx/"
-          target: "/opt/hooraytalk/nginx"
+          target: "/opt/hooraytalk/infrastructure/nginx"
 
       - name: Deploy containers on VPS
         uses: appleboy/ssh-action@v1.0.3
@@ -65,8 +65,8 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: 22
           script: |
-            cd /opt/hooraytalk/nginx
-            echo "${{ secrets.SSL_CERTIFICATE }}" > ./ssl/hooraytalk.crt
+            cd /opt/hooraytalk/infrastructure/nginx
+            echo "${{ secrets.SSL_CERTIFICATE }}" > ./ssl/hooraytalk.crt # Error is related to wrong path (see the deployment structire on the VPS)
             echo "${{ secrets.SSL_KEY }}" > ./ssl/hooraytalk.key
             docker-compose down
             docker-compose pull nginx-container
