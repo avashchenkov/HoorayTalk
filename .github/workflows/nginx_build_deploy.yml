@@ -13,6 +13,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Add SSH key to known_hosts
+        run: |
+          ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
+          
       - name: Debug SSH connection
         env:
           SSH_KEY: ${{ secrets.SSH_KEY }}
@@ -20,7 +24,7 @@ jobs:
           echo "$SSH_KEY" > ssh_key
           chmod 600 ssh_key
           ssh -vvv -i ssh_key ${{ secrets.USERNAME }}@${{ secrets.HOST }} echo "Connection successful"
-          
+
       - name: Checkout repository
         uses: actions/checkout@v2
 
