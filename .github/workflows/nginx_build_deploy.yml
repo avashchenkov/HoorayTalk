@@ -57,6 +57,16 @@ jobs:
           source: "infrastructure/nginx/"
           target: "/opt/hooraytalk/"
 
+      - name: Copy docker-compose.yaml to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          source: "docker-compose.yaml"
+          target: "/opt/hooraytalk/"
+
       - name: Deploy containers on VPS
         uses: appleboy/ssh-action@v1.0.3
         with:
