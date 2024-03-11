@@ -58,11 +58,12 @@ jobs:
           target: "/opt/hooraytalk/nginx"
 
       - name: Deploy containers on VPS
-        uses: appleboy/ssh-action@v0.1.2
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
+          port: 22
           script: |
             cd /opt/hooraytalk/nginx
             echo "${{ secrets.SSL_CERTIFICATE }}" > ./ssl/hooraytalk.crt
