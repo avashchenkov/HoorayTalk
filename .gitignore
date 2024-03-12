@@ -1,2 +1,3 @@
 .DS_Store
 infrastructure/nginx/ssl/*
+.idea
