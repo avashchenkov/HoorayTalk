@@ -1,0 +1,73 @@
+openapi: 3.1.0
+info:
+  title: HoorayTalk Telegram Customer Adapter API
+  description: This is the HoorayTalk Telegram Customer Adapter API specification for internal use.
+  license:
+    name: MIT License (MIT)
+    url: https://opensource.org/licenses/MIT
+  version: 1.0.0
+servers:
+  - url: https://telegram-customer-adapter:443/v1
+tags:
+  - name: message
+    description: Message operations
+  - name: health
+    description: Health check operations
+paths:
+  /message:
+    post:
+      tags:
+        - message
+      summary: Send a message to the customer via Telegram Bot API
+      description: Send a message to the customer via Telegram Bot API using the provided message payload, chat ID, and Telegram Bot API token
+      operationId: sendMessage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendMessageRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+      security:
+        - IntraServiceApiKeyAuth: [ ]
+  /health:
+    get:
+      tags:
+        - health
+      summary: Service health check
+      description: Service health check endpoint to verify the service is running
+      operationId: getHealthStatus
+      responses:
+        '200':
+          description: Service is healthy
+        '401':
+          description: Unauthorized
+      security:
+        - IntraServiceApiKeyAuth: [ ]
+components:
+  schemas:
+    SendMessageRequest:
+      type: object
+      required:
+        - chat_id
+        - message
+      properties:
+        chat_id:
+          type: string
+          description: Unique identifier for the target chat
+        message:
+          type: string
+          description: Text of the message to be sent to the customer
+  securitySchemes:
+    IntraServiceApiKeyAuth:
+      type: apiKey
+      name: API-KEY
+      in: header
