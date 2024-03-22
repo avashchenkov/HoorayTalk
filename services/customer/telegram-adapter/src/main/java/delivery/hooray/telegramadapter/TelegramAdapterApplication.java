@@ -1,13 +1,13 @@
-package delivery.hooray.telegramcustomeradapter;
+package delivery.hooray.telegramadapter;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class TelegramCustomerAdapterApplication {
+public class TelegramAdapterApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(TelegramCustomerAdapterApplication.class, args);
+		SpringApplication.run(TelegramAdapterApplication.class, args);
 	}
 
 }

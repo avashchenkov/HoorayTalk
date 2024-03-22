@@ -1,10 +1,10 @@
-package delivery.hooray.telegramcustomeradapter;
+package delivery.hooray.telegramadapter;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class TelegramCustomerAdapterApplicationTests {
+class TelegramAdapterApplicationTests {
 
 	@Test
 	void contextLoads() {
