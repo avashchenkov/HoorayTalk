@@ -57,15 +57,23 @@ components:
     SendMessageRequest:
       type: object
       required:
+        - bot_id
         - chat_id
         - message
+        - from
       properties:
+        bot_id:
+          type: string
+          description: Unique identifier of the bot
         chat_id:
           type: string
-          description: Unique identifier for the target chat
+          description: Unique identifier of the target chat
         message:
           type: string
           description: Text of the message to be sent to the customer
+        from:
+          type: string
+          description: Unique identifier for the sender
   securitySchemes:
     IntraServiceApiKeyAuth:
       type: apiKey
