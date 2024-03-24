@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: HoorayTalk Message Hub API
-  description: This is the HoorayTalk Message Hub API specification for internal use.
+  description: This is the HoorayTalk Discord Adapter API specification for internal use.
   license:
     name: MIT License (MIT)
     url: https://opensource.org/licenses/MIT
@@ -18,8 +18,8 @@ paths:
     post:
       tags:
         - message
-      summary: Handle a newly created message by the Message Hub
-      description: Handle a newly created message by the Message Hub. It process the message and send it to the target chat.
+      summary: Send a message to the service agent chat of a Discord server
+      description: Send a message to the admin-side chat
       operationId: sendMessage
       requestBody:
         content:
