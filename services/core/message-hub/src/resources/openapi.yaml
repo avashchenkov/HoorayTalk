@@ -1,13 +1,13 @@
 openapi: 3.0.0
 info:
-  title: HoorayTalk Telegram Customer Adapter API
-  description: This is the HoorayTalk Telegram Customer Adapter API specification for internal use.
+  title: HoorayTalk Message Hub API
+  description: This is the HoorayTalk Message Hub API specification for internal use.
   license:
     name: MIT License (MIT)
     url: https://opensource.org/licenses/MIT
   version: 1.0.0
 servers:
-  - url: https://telegram-customer-adapter:443/v1
+  - url: https://message-hub:443/v1
 tags:
   - name: message
     description: Message operations
@@ -18,8 +18,8 @@ paths:
     post:
       tags:
         - message
-      summary: Send a message to the customer via Telegram Bot API
-      description: Send a message to the customer via Telegram Bot API
+      summary: Handle a newly created message by the Message Hub
+      description: Handle a newly created message by the Message Hub. It process the message and send it to the target chat.
       operationId: sendMessage
       requestBody:
         content:
@@ -61,6 +61,8 @@ components:
         - chat_id
         - message
         - from
+        - to
+        - timestamp
       properties:
         bot_id:
           type: string
@@ -74,6 +76,15 @@ components:
         from:
           type: string
           description: Unique identifier of the sender
+        to:
+          type: array
+          items:
+            type: string
+          description: Unique identifiers of the recipients
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp when the message was created
   securitySchemes:
     IntraServiceApiKeyAuth:
       type: apiKey
