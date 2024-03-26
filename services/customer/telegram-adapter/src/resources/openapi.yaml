@@ -60,7 +60,6 @@ components:
         - bot_id
         - chat_id
         - message
-        - from
       properties:
         bot_id:
           type: string
@@ -71,9 +70,6 @@ components:
         message:
           type: string
           description: Text of the message to be sent to the customer
-        from:
-          type: string
-          description: Unique identifier of the sender
   securitySchemes:
     IntraServiceApiKeyAuth:
       type: apiKey
