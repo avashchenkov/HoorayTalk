@@ -13,8 +13,6 @@ tags:
     description: Message operations
   - name: health
     description: Health check operations
-  - name: configuration
-    description: Configuration operations
 paths:
   /message:
     post:
@@ -54,34 +52,6 @@ paths:
           description: Unauthorized
       security:
         - IntraServiceApiKeyAuth: [ ]
-  /bots:
-    post:
-      tags:
-        - configuration
-      summary: Set bot configurations
-      description: |
-        "Set Bots' Configurations" endpoint accepts multiple bot ID and token pairs,
-        updating their configurations in bulk. It overwrites existing settings, ensuring
-        bots run with the latest configurations through a single request. This facilitates
-        efficient management and operation of multiple bots, streamlining their setup and updates.
-        operationId: setBots
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/BotsRequest'
-        required: true
-      responses:
-        '200':
-          description: Successful operation
-        '400':
-          description: Invalid input
-        '401':
-          description: Unauthorized
-        '500':
-          description: Internal server error
-      security:
-        - IntraServiceApiKeyAuth: [ ]
 components:
   schemas:
     SendMessageRequest:
@@ -100,20 +70,6 @@ components:
         message:
           type: string
           description: Text of the message to be sent to the customer
-    BotsRequest:
-      type: object
-      properties:
-        bots:
-          type: array
-          items:
-            type: object
-            properties:
-              bot_id:
-                type: string
-                description: Unique identifier of the bot
-              token:
-                type: string
-                description: Bot token
   securitySchemes:
     IntraServiceApiKeyAuth:
       type: apiKey
