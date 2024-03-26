@@ -7,25 +7,49 @@ info:
     url: https://opensource.org/licenses/MIT
   version: 1.0.0
 servers:
-  - url: https://message-hub:443/v1
+  - url: https://message-hub/v1
 tags:
   - name: message
     description: Message operations
   - name: health
     description: Health check operations
 paths:
-  /message:
+  /customer-message:
     post:
       tags:
         - message
-      summary: Handle a newly created message by the Message Hub
-      description: Handle a newly created message by the Message Hub. It process the message and send it to the target chat.
-      operationId: sendMessage
+      summary: Handle a newly created message from the customer side
+      description: Handle a newly created message from the customer. It processes the message and sends it to the target chat(s).
+      operationId: handleCustomerMessage
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SendMessageRequest'
+              $ref: '#/components/schemas/HandleCustomerMessageRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+      security:
+        - IntraServiceApiKeyAuth: [ ]
+  /admin-message:
+    post:
+      tags:
+        - message
+      summary: Handle a newly created message from the admin side
+      description: Handle a newly created message from the admin. It processes the message and sends it to the target chat(s).
+      operationId: handleAdminMessage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HandleAdminMessageRequest'
         required: true
       responses:
         '200':
@@ -54,41 +78,38 @@ paths:
         - IntraServiceApiKeyAuth: [ ]
 components:
   schemas:
-    SendMessageRequest:
+    HandleCustomerMessageRequest:
       type: object
       required:
         - bot_id
         - customer_chat_id
-        - admin_chat_id
         - message
-        - from
-        - to
-        - timestamp
       properties:
         bot_id:
           type: string
           description: Unique identifier of the bot
         customer_chat_id:
           type: string
-          description: Unique identifier of the customer-side chat
+          description: Unique identifier of the target chat
+        message:
+          type: string
+          description: Text of the message to be sent to the customer
+    HandleAdminMessageRequest:
+      type: object
+      required:
+        - bot_id
+        - admin_chat_id
+        - message
+      properties:
+        bot_id:
+          type: string
+          description: Unique identifier of the bot
         admin_chat_id:
           type: string
           description: Unique identifier of the admin-side chat
         message:
           type: string
           description: Text of the message to be sent
-        from:
-          type: string
-          description: Unique identifier of the sender
-        to:
-          type: array
-          items:
-            type: string
-          description: Unique identifiers of the recipients
-        timestamp:
-          type: string
-          format: date-time
-          description: Timestamp when the message was created
   securitySchemes:
     IntraServiceApiKeyAuth:
       type: apiKey

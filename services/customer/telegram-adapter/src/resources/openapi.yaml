@@ -7,7 +7,7 @@ info:
     url: https://opensource.org/licenses/MIT
   version: 1.0.0
 servers:
-  - url: https://telegram-customer-adapter:443/v1
+  - url: https://telegram-customer-adapter/v1
 tags:
   - name: message
     description: Message operations
@@ -58,13 +58,13 @@ components:
       type: object
       required:
         - bot_id
-        - chat_id
+        - customer_chat_id
         - message
       properties:
         bot_id:
           type: string
           description: Unique identifier of the bot
-        chat_id:
+        customer_chat_id:
           type: string
           description: Unique identifier of the target chat
         message:
