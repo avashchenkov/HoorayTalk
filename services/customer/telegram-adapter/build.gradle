@@ -29,7 +29,7 @@ tasks.named('test') {
 
 openApiGenerate {
 	generatorName = "spring"
-	inputSpec = "$rootDir/src/main/resources/openapi.yaml".toString()
+	inputSpec = "$rootDir/services/customer/telegram-adapter/src/main/resources/openapi.yaml".toString()
 	outputDir = "$buildDir/generated".toString()
 	apiPackage = "delivery.hooray.telegramadapter.api"
 	modelPackage = "delivery.hooray.telegramadapter.model"
@@ -51,4 +51,6 @@ sourceSets {
 	}
 }
 
-compileJava.dependsOn openApiGenerate
+tasks.named('compileJava').configure {
+	dependsOn tasks.named('openApiGenerate')
+}
