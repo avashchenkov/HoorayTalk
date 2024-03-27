@@ -4,7 +4,7 @@ networks:
     name: hooraytalk-network
     driver: bridge
 services:
-  nginx-container:
+  nginx-service:
     image: nginx:alpine
     ports:
       - "443:443"
