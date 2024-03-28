@@ -1,11 +1,11 @@
 package delivery.hooray.telegramadapter.api;
 
-public class HealthApiImpl implements HealthApi {
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RestController;
 
-    @Override
-    public Optional<NativeWebRequest> getRequest() {
-        return Optional.empty();
-    }
+@RestController
+public class HealthApiImpl implements HealthApi {
 
     @Override
     public ResponseEntity<Void> getHealthStatus() {
