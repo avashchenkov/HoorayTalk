@@ -1,8 +1,10 @@
 package delivery.hooray.telegramadapter.security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -11,11 +13,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@Component
 public class ApiKeyAuthFilter extends OncePerRequestFilter {
 
     private final String apiKey;
 
-    public ApiKeyAuthFilter(String apiKey) {
+    public ApiKeyAuthFilter(@Value("${TELEGRAM_ADAPTER_API_KEY:default_key}")String apiKey) {
         this.apiKey = apiKey;
     }
 
