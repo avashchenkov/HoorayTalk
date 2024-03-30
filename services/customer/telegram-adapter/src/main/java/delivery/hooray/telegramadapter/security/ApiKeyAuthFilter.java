@@ -23,7 +23,6 @@ public class ApiKeyAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String requestApiKey = request.getHeader("X-API-KEY");
         if (apiKey.equals(requestApiKey)) {
-            // Установка аутентификации в контексте безопасности
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken("apiUser", null, null);
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authentication);
