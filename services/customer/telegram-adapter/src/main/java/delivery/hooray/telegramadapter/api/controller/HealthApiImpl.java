@@ -1,5 +1,6 @@
-package delivery.hooray.telegramadapter.api;
+package delivery.hooray.telegramadapter.api.controller;
 
+import delivery.hooray.telegramadapter.api.HealthApi;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
