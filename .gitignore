@@ -1,5 +1,6 @@
 .DS_Store
 *.crt
 *.key
+*.p12
 .idea
 .gradle
