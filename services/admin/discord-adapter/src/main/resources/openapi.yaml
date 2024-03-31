@@ -50,8 +50,6 @@ paths:
           description: Service is healthy
         '401':
           description: Unauthorized
-      security:
-        - IntraServiceApiKeyAuth: [ ]
 components:
   schemas:
     SendMessageRequest:
