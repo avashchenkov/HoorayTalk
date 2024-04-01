@@ -7,7 +7,7 @@ services:
   nginx-service:
     image: nginx:alpine
     ports:
-      - "443:443"
+      - "8443:8443"
     volumes:
       - ./infrastructure/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./infrastructure/nginx/ssl:/etc/nginx/ssl:ro
@@ -27,7 +27,7 @@ services:
       - SSL_CERT_FILE=/etc/telegram-adapter-service/ssl/hooraytalk.crt
       - SSL_KEY_FILE=/etc/telegram-adapter-service/ssl/hooraytalk.key
     expose:
-      - "443"
+      - "8443"
     networks:
       - hooraytalk-network
 
@@ -39,7 +39,7 @@ services:
   #     - SSL_CERT_FILE=/etc/chat-management-service/ssl/hooraytalk.crt
   #     - SSL_KEY_FILE=/etc/chat-management-service/ssl/hooraytalk.key
   #   expose:
-  #     - "443"
+  #     - "8443"
   #   networks:
   #     - hooraytalk-network
 
@@ -51,7 +51,7 @@ services:
   #     - SSL_CERT_FILE=/etc/openai-service/ssl/hooraytalk.crt
   #     - SSL_KEY_FILE=/etc/openai-service/ssl/hooraytalk.key
   #   expose:
-  #     - "443"
+  #     - "8443"
   #   networks:
   #     - hooraytalk-network
 
@@ -63,6 +63,6 @@ services:
   #     - SSL_CERT_FILE=/etc/discord-crm-service/ssl/hooraytalk.crt
   #     - SSL_KEY_FILE=/etc/discord-crm-service/ssl/hooraytalk.key
   #   expose:
-  #     - "443"
+  #     - "8443"
   #   networks:
   #     - hooraytalk-network
