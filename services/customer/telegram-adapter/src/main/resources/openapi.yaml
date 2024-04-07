@@ -18,8 +18,8 @@ paths:
     post:
       tags:
         - message
-      summary: Send a message to the customer via Telegram Bot API
-      description: Send a message to the customer via Telegram Bot API
+      summary: Send a message to the customer via Telegram Bot
+      description: Send a message to the customer via Telegram Bot
       operationId: sendMessage
       requestBody:
         content:
