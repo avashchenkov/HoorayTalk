@@ -2,7 +2,8 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.2.4'
 	id 'io.spring.dependency-management' version '1.1.4'
-	id "org.openapi.generator" version "7.4.0"
+	id 'org.openapi.generator' version '7.4.0'
+	id 'org.springframework.cloud.contract' version '4.1.2'
 }
 
 group = 'delivery.hooray'
@@ -17,28 +18,27 @@ repositories {
 }
 
 ext {
+	set('springBootVersion', '3.2.4')
+	set('springCloudVersion', '4.1.2')
+	set('springMockMvcVersion', '5.4.0')
 	set('springdocVersion', '1.6.14')
-	set('swaggerUiVersion', '5.3.1')
 }
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.data:spring-data-commons'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation "org.springdoc:springdoc-openapi-ui:${springdocVersion}"
-	implementation 'com.google.code.findbugs:jsr305:3.0.2'
-	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml'
-	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
-	implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'com.fasterxml.jackson.core:jackson-databind'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation "org.springframework.cloud:spring-cloud-starter-contract-verifier:${springCloudVersion}"
+	testImplementation "org.springframework.cloud:spring-cloud-contract-spec:${springCloudVersion}"
+	testImplementation "io.rest-assured:spring-mock-mvc:${springMockMvcVersion}"
 }
 
 dependencyManagement {
 	imports {
-		mavenBom "org.springframework.boot:spring-boot-dependencies:2.7.15"
+		mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
 	}
 }
 
@@ -47,18 +47,20 @@ tasks.named('test') {
 }
 
 openApiGenerate {
-	generatorName = "spring"
-	inputSpec = "$rootDir/services/customer/telegram-adapter/src/main/resources/openapi.yaml".toString()
-	outputDir = "$buildDir/generated".toString()
-	apiPackage = "delivery.hooray.telegramadapter.api"
-	modelPackage = "delivery.hooray.telegramadapter.model"
-	invokerPackage = "delivery.hooray.telegramadapter.invoker"
+	generatorName = 'spring'
+	inputSpec = "${rootDir}/services/customer/telegram-adapter/src/main/resources/openapi.yaml".toString()
+	outputDir = layout.buildDirectory.dir('generated').get().asFile.absolutePath
+	apiPackage = 'delivery.hooray.telegramadapter.api'
+	modelPackage = 'delivery.hooray.telegramadapter.model'
+	invokerPackage = 'delivery.hooray.telegramadapter.invoker'
 	configOptions = [
-			interfaceOnly : "true",
-			useTags: "true",
-			useBeanValidation: "true",
-			performBeanValidation: "true",
-			dateLibrary: "java8"
+			interfaceOnly : 'true',
+			useTags: 'true',
+			useBeanValidation: 'true',
+			performBeanValidation: 'true',
+			dateLibrary: 'java8',
+			library: 'spring-boot',
+			useSpringBoot3: 'true'
 	]
 }
 
@@ -83,4 +85,12 @@ jar {
 				'Implementation-Version': archiveVersion.get()
 		)
 	}
+}
+
+contracts {
+	baseClassForTests = 'delivery.hooray.telegramadapter.TelegramAdapterApplicationTests'
+}
+
+test {
+	dependsOn 'generateContractTests'
 }
