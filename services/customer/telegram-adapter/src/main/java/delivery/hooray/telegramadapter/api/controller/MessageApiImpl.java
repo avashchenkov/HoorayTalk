@@ -3,7 +3,6 @@ package delivery.hooray.telegramadapter.api.controller;
 import delivery.hooray.telegramadapter.api.MessageApi;
 import delivery.hooray.telegramadapter.model.SendMessageRequest;
 import org.apache.commons.lang3.NotImplementedException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
