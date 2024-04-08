@@ -1,6 +1,7 @@
 package delivery.hooray.telegramadapter.security;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.lang.NonNull;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,7 +24,9 @@ public class ApiKeyAuthFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(@NonNull HttpServletRequest request,
+                                    @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain) throws ServletException, IOException {
         String requestApiKey = request.getHeader("X-API-KEY");
         if (apiKey.equals(requestApiKey)) {
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken("apiUser", null, null);
