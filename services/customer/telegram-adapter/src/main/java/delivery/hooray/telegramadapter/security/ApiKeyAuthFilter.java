@@ -18,7 +18,7 @@ public class ApiKeyAuthFilter extends OncePerRequestFilter {
 
     private final String apiKey;
 
-    public ApiKeyAuthFilter(@Value("${TELEGRAM_ADAPTER_API_KEY:default_key}")String apiKey) {
+    public ApiKeyAuthFilter(@Value("${TELEGRAM_ADAPTER_API_KEY}")String apiKey) {
         this.apiKey = apiKey;
     }
 
