@@ -14,7 +14,7 @@ public class Bot {
     protected UUID id;
 
     @Column(name = "token_encrypted", nullable = false)
-    protected String tokenEncrypted; // Шифрованный токен
+    protected String tokenEncrypted;
 
     protected Bot() {}
 
