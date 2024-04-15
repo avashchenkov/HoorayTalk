@@ -4,3 +4,4 @@
 *.p12
 .idea
 .gradle
+/lib/
