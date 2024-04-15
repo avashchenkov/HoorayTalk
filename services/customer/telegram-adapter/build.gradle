@@ -46,6 +46,9 @@ dependencies {
 
 	runtimeOnly 'org.postgresql:postgresql'
 
+	implementation 'org.jasypt:jasypt:1.9.3'
+	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation "org.springframework.cloud:spring-cloud-starter-contract-verifier:${springCloudVersion}"
 	testImplementation "org.springframework.cloud:spring-cloud-contract-spec:${springCloudVersion}"
