@@ -9,30 +9,28 @@ import java.util.UUID;
 @Table(name = "bot")
 public class Bot {
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "id", updatable = false, nullable = false)
-    private UUID id;
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2")
+    protected UUID id;
 
-    @Lob
-    @Column(name = "token_encrypted", nullable = false, columnDefinition = "bytea")  // Указываем точный тип данных для PostgreSQL
-    private byte[] tokenEncrypted;
+    @Column(name = "token_encrypted", nullable = false)
+    protected String tokenEncrypted; // Шифрованный токен
 
-    public Bot() {}
+    protected Bot() {}
 
-    public Bot(byte[] tokenEncrypted) {
-        this.tokenEncrypted = tokenEncrypted;
+    protected Bot(String tokenEncrypted) {
+        this.setToken(tokenEncrypted);
     }
 
     public UUID getId() {
         return id;
     }
 
-    public byte[] getTokenEncrypted() {
-        return tokenEncrypted;
+    public String getToken() {
+        return this.tokenEncrypted;
     }
 
-    public void setTokenEncrypted(byte[] tokenEncrypted) {
+    public void setToken(String tokenEncrypted) {
         this.tokenEncrypted = tokenEncrypted;
     }
 }
