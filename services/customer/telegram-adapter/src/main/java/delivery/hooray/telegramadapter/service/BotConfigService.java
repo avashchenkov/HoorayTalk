@@ -1,7 +1,7 @@
 package delivery.hooray.telegramadapter.service;
 
 import delivery.hooray.telegramadapter.model.BotConfig;
-import delivery.hooray.telegramadapter.repository.BotRepository;
+import delivery.hooray.telegramadapter.repository.BotConfigRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +16,9 @@ import java.util.stream.Collectors;
  * registering, updating, deleting and launching bots.
  */
 @Service
-public class BotManagementService {
+public class BotConfigService {
     @Autowired
-    protected BotRepository botRepository;
+    protected BotConfigRepository botConfigRepository;
 
     @Autowired
     protected EncryptionService encryptionService;
@@ -33,7 +33,7 @@ public class BotManagementService {
         String encryptedToken = encryptionService.encrypt(token);
         BotConfig botConfig = new BotConfig(encryptedToken);
 
-        botRepository.save(botConfig);
+        botConfigRepository.save(botConfig);
 
         return botConfig.getId();
     }
@@ -46,11 +46,11 @@ public class BotManagementService {
      */
     public void updateBotToken(UUID id, String token) {
         String encryptedToken = encryptionService.encrypt(token);
-        BotConfig botConfig = botRepository.findById(id).orElseThrow();
+        BotConfig botConfig = botConfigRepository.findById(id).orElseThrow();
 
         botConfig.setToken(encryptedToken);
 
-        botRepository.save(botConfig);
+        botConfigRepository.save(botConfig);
     }
 
     /**
@@ -59,7 +59,7 @@ public class BotManagementService {
      * @param id the id of the bot
      */
     public void deleteBot(UUID id) {
-        botRepository.deleteById(id);
+        botConfigRepository.deleteById(id);
     }
 
     /**
@@ -68,7 +68,7 @@ public class BotManagementService {
      * @return list of all bots
      */
     public List<BotConfigDto> getAllBots() {
-        List<BotConfig> botConfigs = botRepository.findAll();
+        List<BotConfig> botConfigs = botConfigRepository.findAll();
 
         List<BotConfigDto> botConfigDtos = botConfigs.stream()
             .map(botConfig -> new BotConfigDto(botConfig.getId(),

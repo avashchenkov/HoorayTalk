@@ -7,4 +7,4 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface BotRepository extends JpaRepository<BotConfig, UUID> {}
+public interface BotConfigRepository extends JpaRepository<BotConfig, UUID> {}
