@@ -10,10 +10,10 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
- * Service for managing bots.
+ * Service for managing bot configs.
  *
- * The service is responsible for management operations on bots like
- * registering, updating, deleting and launching bots.
+ * The service is responsible for management operations on bots configs like
+ * fetching, registering, updating or removing bots.
  */
 @Service
 public class BotConfigService {
@@ -67,7 +67,7 @@ public class BotConfigService {
      *
      * @return list of all bots
      */
-    public List<BotConfigDto> getAllBots() {
+    public List<BotConfigDto> getAllBotConfigs() {
         List<BotConfig> botConfigs = botConfigRepository.findAll();
 
         List<BotConfigDto> botConfigDtos = botConfigs.stream()
