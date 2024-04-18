@@ -2,7 +2,6 @@ package delivery.hooray.telegramadapter.service;
 
 import delivery.hooray.telegramadapter.config.TelegramBotFactory;
 import delivery.hooray.telegramadapter.telegram.TelegramBot;
-import delivery.hooray.telegramadapter.telegram.TelegramUpdateProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -15,20 +14,15 @@ import java.util.List;
 public class BotService {
     private final BotConfigService botConfigService;
     private final TelegramBotFactory botFactory;
-    private final TelegramUpdateProcessor updateProcessor;
-    private final MessageHubSenderService messageHubSenderService;
+
 
     protected final List<TelegramBot> runningBots = new ArrayList<>();
 
     @Autowired
     public BotService(BotConfigService botConfigService,
-                      TelegramBotFactory botFactory,
-                      TelegramUpdateProcessor updateProcessor,
-                      MessageHubSenderService messageHubSenderService) {
+                      TelegramBotFactory botFactory) {
         this.botConfigService = botConfigService;
         this.botFactory = botFactory;
-        this.updateProcessor = updateProcessor;
-        this.messageHubSenderService = messageHubSenderService;
     }
 
     public void runBots() throws Exception {
@@ -43,5 +37,12 @@ public class BotService {
             botsApi.registerBot(bot);
             runningBots.add(bot);
         }
+    }
+
+    public TelegramBot getBot(String botId) {
+        return runningBots.stream()
+                .filter(bot -> bot.getBotId().toString().equals(botId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Bot not found"));
     }
 }

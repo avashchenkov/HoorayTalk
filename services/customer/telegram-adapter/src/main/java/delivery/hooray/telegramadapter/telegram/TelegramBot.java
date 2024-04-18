@@ -1,6 +1,6 @@
 package delivery.hooray.telegramadapter.telegram;
 
-import org.springframework.web.reactive.function.client.WebClient;
+import delivery.hooray.telegramadapter.service.MessageHubSenderService;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -15,27 +15,26 @@ public class TelegramBot extends TelegramLongPollingBot {
     protected final String token;
 
     protected final TelegramUpdateProcessor updateProcessor;
-    protected final WebClient webClient;
+    protected final MessageHubSenderService messageHubSenderService;
 
-    public TelegramBot(UUID id, String username, String token) {
+    public TelegramBot(UUID id,
+                       String username,
+                       String token,
+                       TelegramUpdateProcessor updateProcessor,
+                       MessageHubSenderService messageHubSenderService) {
         this.id = id;
         this.username = username;
         this.token = token;
-        this.updateProcessor = new TelegramUpdateProcessor();
-        this.webClient = WebClient.create();
+        this.updateProcessor = updateProcessor;
+        this.messageHubSenderService = messageHubSenderService;
     }
 
     @Override
     public void onUpdateReceived(Update update) {
         String processedMsg = this.updateProcessor.processUpdate(update);
 
-        webClient.post()
-                .uri("https://fabf0576-fb3d-4d74-b8af-3c8d33986607.mock.pstmn.io/customer-message")
-                .bodyValue(processedMsg)
-                .retrieve()
-                .bodyToMono(String.class)
-                .subscribe(result -> System.out.println("Message: " + result),
-                        error -> System.err.println("Error during HTTP POST: " + error.getMessage()));
+        this.messageHubSenderService.sendMessage(processedMsg)
+                .subscribe();
     }
 
     @Override
@@ -46,5 +45,9 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Override
     public String getBotToken() {
         return token;
+    }
+
+    public UUID getBotId() {
+        return id;
     }
 }

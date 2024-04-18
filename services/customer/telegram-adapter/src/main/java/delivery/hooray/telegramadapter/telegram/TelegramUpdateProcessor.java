@@ -10,10 +10,9 @@ public class TelegramUpdateProcessor {
         String update_details = "";
 
         if (update.hasMessage()) {
-            update_details += "Message: " + update.getMessage().getText();
+            update_details += "Customer message: " + update.getMessage().getText();
         }
 
         return update_details;
     }
 }
-
