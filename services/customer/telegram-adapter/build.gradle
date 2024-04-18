@@ -120,6 +120,7 @@ jar {
 				'Implementation-Version': archiveVersion.get()
 		)
 	}
+	exclude 'db/changelog/**'
 }
 
 contracts {
