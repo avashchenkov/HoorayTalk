@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
 /**
  * Service for managing bot configs.
  *
- * The service is responsible for management operations on bots configs like
- * fetching, registering, updating or removing bots.
+ * The service is responsible for management operations on bot configs like
+ * fetching, registering, updating or removing bot configs.
  */
 @Service
 public class BotConfigService {
@@ -24,12 +24,12 @@ public class BotConfigService {
     protected EncryptionService encryptionService;
 
     /**
-     * Adds a new bot.
+     * Adds a new bot config.
      *
-     * @param token the token of the bot
-     * @return the id of the added bot
+     * @param token the token of the bot config
+     * @return the id of the added bot config
      */
-    public UUID addBot(String token) {
+    public UUID addBotConfig(String token) {
         String encryptedToken = encryptionService.encrypt(token);
         BotConfig botConfig = new BotConfig(encryptedToken);
 
@@ -39,12 +39,12 @@ public class BotConfigService {
     }
 
     /**
-     * Updates the token of a bot.
+     * Updates the token of a bot config.
      *
-     * @param id the id of the bot
-     * @param token the new token of the bot
+     * @param id the id of the bot config
+     * @param token the new token of the bot config
      */
-    public void updateBotToken(UUID id, String token) {
+    public void updateBotConfigToken(UUID id, String token) {
         String encryptedToken = encryptionService.encrypt(token);
         BotConfig botConfig = botConfigRepository.findById(id).orElseThrow();
 
@@ -54,18 +54,18 @@ public class BotConfigService {
     }
 
     /**
-     * Deletes a bot.
+     * Deletes a bot config.
      *
-     * @param id the id of the bot
+     * @param id the id of the bot config
      */
-    public void deleteBot(UUID id) {
+    public void deleteBotConfig(UUID id) {
         botConfigRepository.deleteById(id);
     }
 
     /**
      * Gets all bots.
      *
-     * @return list of all bots
+     * @return list of all bot configs
      */
     public List<BotConfigDto> getAllBotConfigs() {
         List<BotConfig> botConfigs = botConfigRepository.findAll();
