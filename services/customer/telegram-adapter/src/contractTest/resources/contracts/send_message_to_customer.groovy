@@ -9,14 +9,14 @@ Contract.make {
 
     request {
         method 'POST'
-        url '/message'
+        url '/api/v1/message'
         headers {
             contentType(applicationJson())
         }
         body("""
             {
-                "bot_id": "123456",
-                "customer_chat_id": "654321",
+                "bot_id": "d375ca03-291d-40ae-a908-78137273f722",
+                "customer_chat_id": "1525492729",
                 "message": "Hello, this is a test message"
             }
         """)

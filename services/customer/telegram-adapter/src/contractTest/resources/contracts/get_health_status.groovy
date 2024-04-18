@@ -9,7 +9,7 @@ Contract.make {
 
     request {
         method 'GET'
-        url '/health'
+        url '/api/v1/health'
     }
     response {
         status 200
