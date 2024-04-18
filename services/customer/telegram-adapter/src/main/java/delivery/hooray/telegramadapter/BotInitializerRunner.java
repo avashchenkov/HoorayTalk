@@ -1,7 +1,6 @@
 package delivery.hooray.telegramadapter;
 
 import delivery.hooray.telegramadapter.service.BotConfigDto;
-import delivery.hooray.telegramadapter.service.EncryptionService;
 import delivery.hooray.telegramadapter.telegram.TelegramBot;
 import delivery.hooray.telegramadapter.service.BotManagementService;
 import org.springframework.boot.CommandLineRunner;
