@@ -11,13 +11,16 @@
         <sql>CREATE EXTENSION IF NOT EXISTS "uuid-ossp";</sql>
     </changeSet>
 
-    <!-- "bot" table creation -->
+    <!-- "botConfig" table creation -->
     <changeSet id="2" author="new-dummy-user">
-        <createTable tableName="bot">
+        <createTable tableName="bot_config">
             <column name="id" type="UUID" defaultValueComputed="uuid_generate_v4()">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="token_encrypted" type="BYTEA">
+            <column name="token_encrypted" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="username" type="TEXT">
                 <constraints nullable="false"/>
             </column>
         </createTable>

@@ -1,9 +1,12 @@
+import org.liquibase.gradle.LiquibaseTask
+
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.2.4'
 	id 'io.spring.dependency-management' version '1.1.4'
 	id 'org.openapi.generator' version '7.4.0'
 	id 'org.springframework.cloud.contract' version '4.1.2'
+	id 'org.liquibase.gradle' version '2.2.1'
 }
 
 group = 'delivery.hooray'
@@ -28,6 +31,11 @@ ext {
 	set('liquibaseVersion', '4.27.0')
 
 	set('hibernateVersion', '6.4.4.Final')
+
+	set('jasyptVersion', '1.9.3')
+	set('jasyptSpringBootVersion', '3.0.5')
+
+	set('telegramBotsVersion', '6.9.7.1')
 }
 
 dependencies {
@@ -43,11 +51,14 @@ dependencies {
 	implementation "org.openapitools:jackson-databind-nullable:${jacksonDatabindNullableVersion}"
 
 	implementation "org.liquibase:liquibase-core:${liquibaseVersion}"
+	implementation 'info.picocli:picocli:4.7.5'
 
-	runtimeOnly 'org.postgresql:postgresql'
+	implementation 'org.postgresql:postgresql'
 
-	implementation 'org.jasypt:jasypt:1.9.3'
-	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
+	implementation "org.jasypt:jasypt:${jasyptVersion}"
+	implementation "com.github.ulisesbocchio:jasypt-spring-boot-starter:${jasyptSpringBootVersion}"
+
+	implementation "org.telegram:telegrambots:${telegramBotsVersion}"
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation "org.springframework.cloud:spring-cloud-starter-contract-verifier:${springCloudVersion}"
@@ -112,4 +123,25 @@ contracts {
 
 test {
 	dependsOn 'generateContractTests'
+}
+
+liquibase {
+	activities {
+		main {
+			changeLogFile 'src/main/resources/db/changelog/db.changelog-master.xml'
+			url 'jdbc:postgresql://localhost:5432/telegram_adapter_dev'
+			username 'postgres'
+			password 'postgres'
+			classpath 'src/main/resources'
+		}
+	}
+	runList = 'main'
+}
+
+configurations {
+	liquibaseRuntime.extendsFrom implementation
+}
+
+tasks.withType(LiquibaseTask) {
+	classpath = configurations.liquibaseRuntime
 }

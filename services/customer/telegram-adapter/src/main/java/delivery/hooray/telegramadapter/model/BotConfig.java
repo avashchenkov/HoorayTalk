@@ -6,19 +6,21 @@ import org.hibernate.annotations.GenericGenerator;
 import java.util.UUID;
 
 @Entity
-@Table(name = "bot")
-public class Bot {
+@Table(name = "bot_config")
+public class BotConfig {
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     protected UUID id;
 
-    @Column(name = "token_encrypted", nullable = false)
+    @Column(name = "token_encrypted", nullable = false, unique = true)
     protected String tokenEncrypted;
 
-    protected Bot() {}
+    @Column
+    protected String username;
 
-    protected Bot(String tokenEncrypted) {
+    protected BotConfig() {}
+
+    public BotConfig(String tokenEncrypted) {
         this.setToken(tokenEncrypted);
     }
 
@@ -32,5 +34,13 @@ public class Bot {
 
     public void setToken(String tokenEncrypted) {
         this.tokenEncrypted = tokenEncrypted;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+public void setUsername(String username) {
+        this.username = username;
     }
 }
