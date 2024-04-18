@@ -14,7 +14,7 @@ tags:
   - name: health
     description: Health check operations
 paths:
-  /customer-message:
+  /api/v1/customer-message:
     post:
       tags:
         - message
@@ -38,7 +38,7 @@ paths:
           description: Internal server error
       security:
         - IntraServiceApiKeyAuth: [ ]
-  /admin-message:
+  /api/v1/admin-message:
     post:
       tags:
         - message
@@ -62,7 +62,7 @@ paths:
           description: Internal server error
       security:
         - IntraServiceApiKeyAuth: [ ]
-  /health:
+  /api/v1/health:
     get:
       tags:
         - health

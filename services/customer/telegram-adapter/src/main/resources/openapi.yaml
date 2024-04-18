@@ -14,7 +14,7 @@ tags:
   - name: health
     description: Health check operations
 paths:
-  /message:
+  /api/v1/message:
     post:
       tags:
         - message
@@ -40,7 +40,7 @@ paths:
           description: Service is unavailable
       security:
         - IntraServiceApiKeyAuth: [ ]
-  /health:
+  /api/v1/health:
     get:
       tags:
         - health

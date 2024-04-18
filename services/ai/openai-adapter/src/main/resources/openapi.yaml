@@ -14,7 +14,7 @@ tags:
   - name: health
     description: Health check operations
 paths:
-  /chat:
+  /api/v1/chat:
     post:
       tags:
         - chat
@@ -38,7 +38,7 @@ paths:
           description: Internal server error
       security:
         - IntraServiceApiKeyAuth: [ ]
-  /health:
+  /api/v1/health:
     get:
       tags:
         - health
