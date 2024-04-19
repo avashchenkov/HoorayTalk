@@ -37,7 +37,7 @@ ext {
 
 	set('telegramBotsVersion', '6.9.7.1')
 
-set('nettyVersion', '4.1.109.Final')
+	set('nettyVersion', '4.1.109.Final')
 }
 
 dependencies {
