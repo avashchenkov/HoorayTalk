@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class HoorayTalkDiscordAdapterApplication {
+public class DiscordAdapterApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(HoorayTalkDiscordAdapterApplication.class, args);
+		SpringApplication.run(DiscordAdapterApplication.class, args);
 	}
 
 }
