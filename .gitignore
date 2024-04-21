@@ -4,5 +4,5 @@
 *.p12
 .idea
 .gradle
-/lib/*
-!/lib/shared-lib/
+/lib/
+/local-repo/

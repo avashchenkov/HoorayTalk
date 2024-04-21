@@ -18,6 +18,9 @@ java {
 
 repositories {
 	mavenCentral()
+	maven {
+		url = uri("../local-repo")
+	}
 }
 
 ext {
@@ -38,6 +41,8 @@ ext {
 	set('telegramBotsVersion', '6.9.7.1')
 
 	set('nettyVersion', '4.1.109.Final')
+
+	set('sharedLibVersion', '1.0.0')
 }
 
 dependencies {
@@ -69,6 +74,8 @@ dependencies {
 	testImplementation "org.springframework.cloud:spring-cloud-starter-contract-verifier:${springCloudVersion}"
 	testImplementation "org.springframework.cloud:spring-cloud-contract-spec:${springCloudVersion}"
 	testImplementation "io.rest-assured:spring-mock-mvc:${springMockMvcVersion}"
+
+	implementation "delivery.hooray:shared-lib:${sharedLibVersion}"
 }
 
 dependencyManagement {

@@ -1,0 +1,34 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+group = 'com.example'
+version = '1.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    set('jasyptVersion', '1.9.3')
+}
+
+dependencies {
+    implementation "org.jasypt:jasypt:${jasyptVersion}"
+
+    testImplementation 'junit:junit:4.13.2'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url = uri("../local-repo")
+        }
+    }
+}
