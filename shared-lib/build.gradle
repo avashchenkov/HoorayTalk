@@ -23,6 +23,9 @@ dependencies {
 publishing {
     publications {
         mavenJava(MavenPublication) {
+            groupId = 'delivery.hooray'
+            artifactId = 'shared-lib'
+            version = '1.0.0'
             from components.java
         }
     }
