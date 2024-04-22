@@ -2,10 +2,10 @@ package delivery.hooray.sharedlib;
 
 import org.jasypt.util.text.AES256TextEncryptor;
 
-public class Encryptor {
+public class TextEncrypter {
     private final AES256TextEncryptor encryptor = new AES256TextEncryptor();
 
-    public Encryptor(String encryptionPassword) {
+    public TextEncrypter(String encryptionPassword) {
         encryptor.setPassword(encryptionPassword);
     }
 
