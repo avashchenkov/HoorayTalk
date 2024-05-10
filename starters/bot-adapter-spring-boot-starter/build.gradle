@@ -4,13 +4,13 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.2.4'
 	id 'io.spring.dependency-management' version '1.1.4'
-	id 'org.openapi.generator' version '7.4.0'
 	id 'org.springframework.cloud.contract' version '4.1.2'
 	id 'org.liquibase.gradle' version '2.2.1'
+	id 'maven-publish'
 }
 
 group = 'delivery.hooray'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.1'
 
 java {
 	sourceCompatibility = '21'
@@ -19,7 +19,23 @@ java {
 repositories {
 	mavenCentral()
 	maven {
-		url = uri("../../../local-repo")
+		url = uri("../../local-repo")
+	}
+}
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			groupId = 'delivery.hooray'
+			artifactId = 'bot-adapter-spring-boot-starter'
+			version = '1.0.0'
+			from components.java
+		}
+	}
+	repositories {
+		maven {
+			url = uri("../../local-repo")
+		}
 	}
 }
 
@@ -43,21 +59,22 @@ ext {
 	set('nettyVersion', '4.1.109.Final')
 
 	set('sharedLibVersion', '1.0.0')
-	set('botAdapterStarterVersion', '1.0.0')
+
+	set('modelMapperVersion', '3.2.0')
+
+	set('botAdapterSpringBootStarterVersion', '1.0.0')
 }
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation "org.springdoc:springdoc-openapi-ui:${springdocVersion}"
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
 	implementation "org.hibernate:hibernate-core:${hibernateVersion}"
-
-	implementation "org.openapitools:jackson-databind-nullable:${jacksonDatabindNullableVersion}"
 
 	implementation "org.liquibase:liquibase-core:${liquibaseVersion}"
 	implementation 'info.picocli:picocli:4.7.5'
@@ -76,8 +93,10 @@ dependencies {
 	testImplementation "org.springframework.cloud:spring-cloud-contract-spec:${springCloudVersion}"
 	testImplementation "io.rest-assured:spring-mock-mvc:${springMockMvcVersion}"
 
+	implementation "org.modelmapper:modelmapper:${modelMapperVersion}"
+
 	implementation "delivery.hooray:shared-lib:${sharedLibVersion}"
-	implementation "delivery.hooray:bot-adapter-spring-boot-starter:${botAdapterStarterVersion}"
+	implementation "delivery.hooray:bot-adapter-spring-boot-starter:${botAdapterSpringBootStarterVersion}"
 }
 
 dependencyManagement {
@@ -90,34 +109,12 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-openApiGenerate {
-	generatorName = 'spring'
-	inputSpec = "${rootDir}/services/customer/telegram-adapter/src/main/resources/openapi.yaml".toString()
-	outputDir = layout.buildDirectory.dir('generated').get().asFile.absolutePath
-	apiPackage = 'delivery.hooray.telegramadapter.api'
-	modelPackage = 'delivery.hooray.telegramadapter.model'
-	invokerPackage = 'delivery.hooray.telegramadapter.invoker'
-	configOptions = [
-			interfaceOnly : 'true',
-			useTags: 'true',
-			useBeanValidation: 'true',
-			performBeanValidation: 'true',
-			dateLibrary: 'java8',
-			library: 'spring-boot',
-			useSpringBoot3: 'true'
-	]
-}
-
 sourceSets {
 	main {
 		java {
 			srcDirs 'src/main/java', "$buildDir/generated/src/main/java"
 		}
 	}
-}
-
-tasks.named('compileJava').configure {
-	dependsOn tasks.named('openApiGenerate')
 }
 
 jar {

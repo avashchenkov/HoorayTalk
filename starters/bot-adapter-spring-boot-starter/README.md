@@ -1,0 +1,1 @@
+The project is a starter for creating bot adapters for the HoorayTalk to integrate bots on the customer or administrative sides.
