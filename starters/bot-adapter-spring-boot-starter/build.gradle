@@ -4,7 +4,6 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.2.4'
 	id 'io.spring.dependency-management' version '1.1.4'
-	id 'org.springframework.cloud.contract' version '4.1.2'
 	id 'org.liquibase.gradle' version '2.2.1'
 	id 'maven-publish'
 }
@@ -89,8 +88,6 @@ dependencies {
 	runtimeOnly "io.netty:netty-resolver-dns-native-macos:${nettyVersion}:osx-aarch_64"
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation "org.springframework.cloud:spring-cloud-starter-contract-verifier:${springCloudVersion}"
-	testImplementation "org.springframework.cloud:spring-cloud-contract-spec:${springCloudVersion}"
 	testImplementation "io.rest-assured:spring-mock-mvc:${springMockMvcVersion}"
 
 	implementation "org.modelmapper:modelmapper:${modelMapperVersion}"
@@ -105,16 +102,19 @@ dependencyManagement {
 	}
 }
 
-tasks.named('test') {
-	useJUnitPlatform()
-}
-
 sourceSets {
 	main {
 		java {
 			srcDirs 'src/main/java', "$buildDir/generated/src/main/java"
 		}
+		resources {
+			srcDirs 'src/main/resources'
+		}
 	}
+}
+
+processResources {
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 jar {
@@ -126,15 +126,10 @@ jar {
 				'Implementation-Version': archiveVersion.get()
 		)
 	}
-	exclude 'db/changelog/**'
 }
 
-contracts {
-	baseClassForTests = 'delivery.hooray.telegramadapter.TelegramAdapterApplicationTests'
-}
-
-test {
-	dependsOn 'generateContractTests'
+bootJar {
+	enabled = false
 }
 
 liquibase {

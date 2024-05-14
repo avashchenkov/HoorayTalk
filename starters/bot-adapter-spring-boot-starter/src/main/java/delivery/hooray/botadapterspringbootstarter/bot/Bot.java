@@ -29,7 +29,8 @@ public class Bot {
         botBehavior.run(this);
     }
 
-    public void sendMsgToCustomer(MessageToCustomerRequestData request) {
+    // TODO: move it to the client services as the signature is unknown here
+    public void sendMsgToBotEndUser(MessageToCustomerRequestData request) {
         botBehavior.sendMsgToClient(this, request);
     }
 

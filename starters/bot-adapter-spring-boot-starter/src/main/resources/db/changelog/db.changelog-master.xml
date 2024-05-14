@@ -13,14 +13,19 @@
 
     <!-- "botModel" table creation -->
     <changeSet id="2" author="new-dummy-user">
-        <createTable tableName="bot_config">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="bot"/>
+            </not>
+        </preConditions>
+        <createTable tableName="bot">
             <column name="id" type="UUID" defaultValueComputed="uuid_generate_v4()">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="token_encrypted" type="TEXT">
                 <constraints nullable="false"/>
             </column>
-            <column name="username" type="TEXT">
+            <column name="dtype" type="TEXT">
                 <constraints nullable="false"/>
             </column>
         </createTable>
