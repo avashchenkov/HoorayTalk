@@ -92,7 +92,7 @@ tasks.named('test') {
 
 openApiGenerate {
 	generatorName = 'spring'
-	inputSpec = "${rootDir}/services/customer/telegram-adapter/src/main/resources/openapi.yaml".toString()
+	inputSpec = "$projectDir/src/main/resources/openapi.yaml"
 	outputDir = layout.buildDirectory.dir('generated').get().asFile.absolutePath
 	apiPackage = 'delivery.hooray.telegramadapter.api'
 	modelPackage = 'delivery.hooray.telegramadapter.model'
@@ -113,7 +113,14 @@ sourceSets {
 		java {
 			srcDirs 'src/main/java', "$buildDir/generated/src/main/java"
 		}
+		resources {
+			srcDirs 'src/main/resources'
+		}
 	}
+}
+
+processResources {
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 tasks.named('compileJava').configure {

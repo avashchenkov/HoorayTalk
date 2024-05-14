@@ -1,5 +1,6 @@
 package delivery.hooray.telegramadapter.api.controller;
 
+import delivery.hooray.botadapterspringbootstarter.bot.MessageToCustomerRequestData;
 import delivery.hooray.botadapterspringbootstarter.service.BotService;
 import delivery.hooray.telegramadapter.api.MessageApi;
 import delivery.hooray.telegramadapter.bot.TelegramBot;
@@ -31,14 +32,14 @@ public class MessageApiImpl implements MessageApi {
             UUID botId = null;
 
             try {
-                botId = UUID.fromString(sendMessageRequest.getBotId()); // Преобразование строки в UUID
+                botId = UUID.fromString(sendMessageRequest.getBotId());
             } catch (IllegalArgumentException e) {
                 System.out.println("Unable to cast to UUID: ");
             }
 
             TelegramBot bot = (TelegramBot) botService.getBot(botId);
 
-            bot.getTelegramBotImpl().execute(message);
+            bot.getTelegramBotImpl().execute(message);  // TODO: bot.sendMsgToBotApi(sendMessageRequest);
 
             return ResponseEntity.ok().build();
         } catch (TelegramApiException e) {

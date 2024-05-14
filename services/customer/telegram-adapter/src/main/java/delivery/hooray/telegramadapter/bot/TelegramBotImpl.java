@@ -28,7 +28,7 @@ public class TelegramBotImpl extends TelegramLongPollingBot {
      * @return
      */
     public void sendMsgToClient(MessageToCustomerRequestData data) {
-        System.out.println(data.getMessage());
+        System.out.println(data.getMessage());  // TODO: it is not used anywhere
     }
 
 

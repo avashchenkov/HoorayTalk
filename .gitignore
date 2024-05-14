@@ -4,5 +4,6 @@
 *.p12
 .idea
 .gradle
+.env
 /lib/
 /local-repo/

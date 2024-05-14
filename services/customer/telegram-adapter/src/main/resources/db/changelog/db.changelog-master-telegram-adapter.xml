@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+    <!-- Include the starter changelog -->
+    <include file="classpath:db/changelog/db.changelog-master.xml" relativeToChangelogFile="false"/>
+
+    <!-- Additional changes specific to the client -->
+    <!-- Assuming the starter already handles the 'bot' table creation, and only 'dtype' needs to be added -->
+    <changeSet id="3" author="new-dummy-user">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="bot" columnName="dtype"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="bot">
+            <column name="dtype" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>
