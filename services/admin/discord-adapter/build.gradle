@@ -18,6 +18,9 @@ java {
 
 repositories {
 	mavenCentral()
+	maven {
+		url = uri("../../../local-repo")
+	}
 }
 
 ext {
@@ -35,9 +38,12 @@ ext {
 	set('jasyptVersion', '1.9.3')
 	set('jasyptSpringBootVersion', '3.0.5')
 
-	set('jdaVersion', '5.0.0-alpha.10')
-
 	set('nettyVersion', '4.1.109.Final')
+
+	set('jdaVersion', '5.0.0-beta.23')
+
+	set('sharedLibVersion', '1.0.0')
+	set('botAdapterStarterVersion', '1.0.0')
 }
 
 dependencies {
@@ -69,6 +75,9 @@ dependencies {
 	testImplementation "org.springframework.cloud:spring-cloud-starter-contract-verifier:${springCloudVersion}"
 	testImplementation "org.springframework.cloud:spring-cloud-contract-spec:${springCloudVersion}"
 	testImplementation "io.rest-assured:spring-mock-mvc:${springMockMvcVersion}"
+
+	implementation "delivery.hooray:shared-lib:${sharedLibVersion}"
+	implementation "delivery.hooray:bot-adapter-spring-boot-starter:${botAdapterStarterVersion}"
 }
 
 dependencyManagement {
@@ -83,7 +92,7 @@ tasks.named('test') {
 
 openApiGenerate {
 	generatorName = 'spring'
-	inputSpec = "${rootDir}/services/admin/discord-adapter/src/main/resources/openapi.yaml".toString()
+	inputSpec = "$projectDir/src/main/resources/openapi.yaml"
 	outputDir = layout.buildDirectory.dir('generated').get().asFile.absolutePath
 	apiPackage = 'delivery.hooray.discordadapter.api'
 	modelPackage = 'delivery.hooray.discordadapter.model'
@@ -104,7 +113,14 @@ sourceSets {
 		java {
 			srcDirs 'src/main/java', "$buildDir/generated/src/main/java"
 		}
+		resources {
+			srcDirs 'src/main/resources'
+		}
 	}
+}
+
+processResources {
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 tasks.named('compileJava').configure {
@@ -124,7 +140,7 @@ jar {
 }
 
 contracts {
-	baseClassForTests = 'delivery.hooray.discordadapter.DiscordAdapterApplication'
+	baseClassForTests = 'delivery.hooray.discordadapter.DiscordAdapterApplicationTests'
 }
 
 test {
@@ -135,7 +151,7 @@ liquibase {
 	activities {
 		main {
 			changeLogFile 'src/main/resources/db/changelog/db.changelog-master.xml'
-			url 'jdbc:postgresql://localhost:5432/telegram_adapter_dev'
+			url 'jdbc:postgresql://localhost:5432/discord_adapter_dev'
 			username 'postgres'
 			password 'postgres'
 			classpath 'src/main/resources'
