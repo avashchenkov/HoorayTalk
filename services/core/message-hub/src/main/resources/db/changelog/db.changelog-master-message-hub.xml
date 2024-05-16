@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+    <changeSet id="1" author="new-dummy-user">
+        <sql>CREATE EXTENSION IF NOT EXISTS "uuid-ossp";</sql>
+    </changeSet>
+
+    <changeSet id="2" author="new-dummy-user">
+        <sql>
+            CREATE TABLE business
+            (
+                id   UUID         NOT NULL,
+                name VARCHAR(255) NOT NULL,
+                info VARCHAR(255),
+                CONSTRAINT pk_business PRIMARY KEY (id)
+            );
+
+            ALTER TABLE business
+                ADD CONSTRAINT uc_business_name UNIQUE (name);
+        </sql>
+    </changeSet>
+
+    <changeSet id="3" author="new-dummy-user">
+        <sql>
+            CREATE TABLE customer_bot
+            (
+                id        UUID NOT NULL,
+                tenant_id UUID NOT NULL,
+                CONSTRAINT pk_customer_bot PRIMARY KEY (id)
+            );
+
+            ALTER TABLE customer_bot
+                ADD CONSTRAINT uc_customer_bot_tenant UNIQUE (tenant_id);
+        </sql>
+    </changeSet>
+
+    <changeSet id="4" author="new-dummy-user">
+        <sql>
+            CREATE TABLE telegram_customer_bot
+            (
+                id              UUID NOT NULL,
+                telegram_bot_id UUID NOT NULL,
+                CONSTRAINT pk_telegram_customer_bot PRIMARY KEY (id)
+            );
+
+            ALTER TABLE telegram_customer_bot
+                ADD CONSTRAINT FK_TELEGRAM_CUSTOMER_BOT_ON_ID FOREIGN KEY (id) REFERENCES customer_bot (id);
+        </sql>
+    </changeSet>
+
+    <changeSet id="5" author="new-dummy-user">
+        <sql>
+            CREATE TABLE admin_bot
+            (
+                id UUID NOT NULL,
+                CONSTRAINT pk_admin_bot PRIMARY KEY (id)
+            );
+        </sql>
+    </changeSet>
+
+    <changeSet id="6" author="new-dummy-user">
+        <sql>
+            CREATE TABLE discord_server_admin_bot
+            (
+                id             UUID         NOT NULL,
+                discord_bot_id UUID         NOT NULL,
+                guild_id       VARCHAR(255) NOT NULL,
+                CONSTRAINT pk_discord_server_admin_bot PRIMARY KEY (id)
+            );
+
+            ALTER TABLE discord_server_admin_bot
+                ADD CONSTRAINT FK_DISCORD_SERVER_ADMIN_BOT_ON_ID FOREIGN KEY (id) REFERENCES admin_bot (id);
+        </sql>
+    </changeSet>
+
+    <changeSet id="7" author="new-dummy-user">
+        <sql>
+            CREATE TABLE ai_assistant
+            (
+                id UUID NOT NULL,
+                CONSTRAINT pk_ai_assistant PRIMARY KEY (id)
+            );
+        </sql>
+    </changeSet>
+
+    <changeSet id="8" author="new-dummy-user">
+        <sql>
+            CREATE TABLE openai_ai_assistant
+            (
+                id                          UUID NOT NULL,
+                openai_assistant_account_id UUID NOT NULL,
+                CONSTRAINT pk_openai_ai_assistant PRIMARY KEY (id)
+            );
+
+            ALTER TABLE openai_ai_assistant
+                ADD CONSTRAINT FK_OPENAI_AI_ASSISTANT_ON_ID FOREIGN KEY (id) REFERENCES ai_assistant (id);
+        </sql>
+    </changeSet>
+
+    <changeSet id="9" author="new-dummy-user">
+        <sql>
+            CREATE TABLE ai_assistant_instruction
+            (
+                id               UUID         NOT NULL,
+                instruction_text VARCHAR(255) NOT NULL,
+                CONSTRAINT pk_ai_assistant_instruction PRIMARY KEY (id)
+            );
+        </sql>
+    </changeSet>
+
+    <changeSet id="10" author="new-dummy-user">
+        <sql>
+            CREATE TABLE chat
+            (
+                id                          UUID NOT NULL,
+                tenant_id                   UUID,
+                ai_assistant_instruction_id UUID,
+                CONSTRAINT pk_chat PRIMARY KEY (id)
+            );
+
+            ALTER TABLE chat
+                ADD CONSTRAINT FK_CHAT_ON_AI_ASSISTANT_INSTRUCTION FOREIGN KEY (ai_assistant_instruction_id) REFERENCES ai_assistant_instruction (id);
+
+            CREATE INDEX idx_tenant_id ON chat (tenant_id);
+        </sql>
+    </changeSet>
+
+    <changeSet id="11" author="new-dummy-user">
+        <sql>
+            CREATE TABLE message
+            (
+                id        UUID                     NOT NULL,
+                chat_id   UUID                     NOT NULL,
+                timestamp TIMESTAMP WITH TIME ZONE NOT NULL,
+                author    VARCHAR(255)             NOT NULL,
+                content   TEXT                     NOT NULL,
+                CONSTRAINT pk_message PRIMARY KEY (id)
+            );
+
+            CREATE INDEX idx_timestamp ON message (timestamp);
+
+            ALTER TABLE message
+                ADD CONSTRAINT FK_MESSAGE_ON_CHAT FOREIGN KEY (chat_id) REFERENCES chat (id);
+
+            CREATE INDEX idx_chat_id ON message (chat_id);
+        </sql>
+    </changeSet>
+
+    <changeSet id="12" author="new-dummy-user">
+        <sql>
+            CREATE TABLE tenant
+            (
+                id                             UUID NOT NULL,
+                business_id                    UUID NOT NULL,
+                ai_assistant_start_instruction UUID,
+                customer_bot_id                UUID NOT NULL,
+                admin_bot_id                   UUID NOT NULL,
+                ai_assistant_id                UUID NOT NULL,
+                CONSTRAINT pk_tenant PRIMARY KEY (id)
+            );
+
+            ALTER TABLE tenant
+                ADD CONSTRAINT uc_tenant_customer_bot UNIQUE (customer_bot_id);
+
+            ALTER TABLE tenant
+                ADD CONSTRAINT FK_TENANT_ON_ADMIN_BOT FOREIGN KEY (admin_bot_id) REFERENCES admin_bot (id);
+
+            ALTER TABLE tenant
+                ADD CONSTRAINT FK_TENANT_ON_AI_ASSISTANT FOREIGN KEY (ai_assistant_id) REFERENCES ai_assistant (id);
+
+            ALTER TABLE tenant
+                ADD CONSTRAINT FK_TENANT_ON_AI_ASSISTANT_START_INSTRUCTION FOREIGN KEY (ai_assistant_start_instruction) REFERENCES ai_assistant_instruction (id);
+
+            ALTER TABLE tenant
+                ADD CONSTRAINT FK_TENANT_ON_BUSINESS FOREIGN KEY (business_id) REFERENCES business (id);
+
+            ALTER TABLE tenant
+                ADD CONSTRAINT FK_TENANT_ON_CUSTOMER_BOT FOREIGN KEY (customer_bot_id) REFERENCES customer_bot (id);
+        </sql>
+    </changeSet>
+
+    <changeSet id="13" author="new-dummy-user">
+        <sql>
+            ALTER TABLE customer_bot
+                ADD CONSTRAINT FK_CUSTOMER_BOT_ON_TENANT FOREIGN KEY (tenant_id) REFERENCES tenant (id);
+
+            ALTER TABLE chat
+                ADD CONSTRAINT FK_CHAT_ON_TENANT FOREIGN KEY (tenant_id) REFERENCES tenant (id);
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
