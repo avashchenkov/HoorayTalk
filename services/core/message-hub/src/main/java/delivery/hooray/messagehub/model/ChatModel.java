@@ -19,11 +19,11 @@ public class ChatModel {
     protected UUID id;
 
     @ManyToOne
-    @Column(name = "tenant_id")
+    @JoinColumn(name = "tenant_id")
     protected TenantModel tenant;
 
     @ManyToOne
-    @Column(name = "ai_assistant_instruction_id")
+    @JoinColumn(name = "ai_assistant_instruction_id")
     protected AiAssistantInstructionModel aiAssistantInstruction;
 
     public UUID getId() {

@@ -11,6 +11,11 @@
     </changeSet>
 
     <changeSet id="2" author="new-dummy-user">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="business"/>
+            </not>
+        </preConditions>
         <sql>
             CREATE TABLE business
             (
@@ -26,6 +31,11 @@
     </changeSet>
 
     <changeSet id="3" author="new-dummy-user">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="customer_bot"/>
+            </not>
+        </preConditions>
         <sql>
             CREATE TABLE customer_bot
             (
@@ -40,6 +50,11 @@
     </changeSet>
 
     <changeSet id="4" author="new-dummy-user">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="telegram_customer_bot"/>
+            </not>
+        </preConditions>
         <sql>
             CREATE TABLE telegram_customer_bot
             (
@@ -54,6 +69,11 @@
     </changeSet>
 
     <changeSet id="5" author="new-dummy-user">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="admin_bot"/>
+            </not>
+        </preConditions>
         <sql>
             CREATE TABLE admin_bot
             (
@@ -64,6 +84,11 @@
     </changeSet>
 
     <changeSet id="6" author="new-dummy-user">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="discord_server_admin_bot"/>
+            </not>
+        </preConditions>
         <sql>
             CREATE TABLE discord_server_admin_bot
             (
@@ -79,6 +104,11 @@
     </changeSet>
 
     <changeSet id="7" author="new-dummy-user">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ai_assistant"/>
+            </not>
+        </preConditions>
         <sql>
             CREATE TABLE ai_assistant
             (
@@ -89,6 +119,11 @@
     </changeSet>
 
     <changeSet id="8" author="new-dummy-user">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="openai_ai_assistant"/>
+            </not>
+        </preConditions>
         <sql>
             CREATE TABLE openai_ai_assistant
             (
@@ -103,6 +138,11 @@
     </changeSet>
 
     <changeSet id="9" author="new-dummy-user">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ai_assistant_instruction"/>
+            </not>
+        </preConditions>
         <sql>
             CREATE TABLE ai_assistant_instruction
             (
@@ -114,6 +154,11 @@
     </changeSet>
 
     <changeSet id="10" author="new-dummy-user">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="chat"/>
+            </not>
+        </preConditions>
         <sql>
             CREATE TABLE chat
             (
@@ -131,6 +176,11 @@
     </changeSet>
 
     <changeSet id="11" author="new-dummy-user">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="message"/>
+            </not>
+        </preConditions>
         <sql>
             CREATE TABLE message
             (
@@ -152,6 +202,11 @@
     </changeSet>
 
     <changeSet id="12" author="new-dummy-user">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="tenant"/>
+            </not>
+        </preConditions>
         <sql>
             CREATE TABLE tenant
             (
@@ -185,10 +240,30 @@
     </changeSet>
 
     <changeSet id="13" author="new-dummy-user">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sqlCheck expectedResult="0">
+                    SELECT COUNT(*) FROM information_schema.table_constraints
+                    WHERE constraint_name='FK_CUSTOMER_BOT_ON_TENANT' AND table_name='customer_bot';
+                </sqlCheck>
+            </not>
+        </preConditions>
         <sql>
             ALTER TABLE customer_bot
                 ADD CONSTRAINT FK_CUSTOMER_BOT_ON_TENANT FOREIGN KEY (tenant_id) REFERENCES tenant (id);
+        </sql>
+    </changeSet>
 
+    <changeSet id="14" author="new-dummy-user">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sqlCheck expectedResult="0">
+                    SELECT COUNT(*) FROM information_schema.table_constraints
+                    WHERE constraint_name='FK_CHAT_ON_TENANT' AND table_name='chat';
+                </sqlCheck>
+            </not>
+        </preConditions>
+        <sql>
             ALTER TABLE chat
                 ADD CONSTRAINT FK_CHAT_ON_TENANT FOREIGN KEY (tenant_id) REFERENCES tenant (id);
         </sql>

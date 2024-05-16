@@ -22,7 +22,7 @@ public class MessageModel {
     protected UUID id;
 
     @ManyToOne
-    @Column(name = "chat_id", nullable = false)
+    @JoinColumn(name = "chat_id", nullable = false)
     protected ChatModel chat;
 
     @Column(columnDefinition = "TIMESTAMP WITH TIME ZONE", nullable = false)

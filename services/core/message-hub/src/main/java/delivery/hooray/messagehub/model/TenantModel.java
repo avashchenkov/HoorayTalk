@@ -15,11 +15,11 @@ public class TenantModel {
     protected UUID id;
 
     @ManyToOne
-    @Column(name = "business_id", nullable = false)
+    @JoinColumn(name = "business_id", nullable = false)
     private BusinessModel business;
 
     @ManyToOne
-    @Column(name = "ai_assistant_start_instruction")
+    @JoinColumn(name = "ai_assistant_start_instruction")
     private AiAssistantInstructionModel aiAssistantStartInstruction;
 
     @OneToOne
