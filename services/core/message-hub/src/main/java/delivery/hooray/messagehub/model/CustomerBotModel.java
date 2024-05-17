@@ -16,7 +16,7 @@ public class CustomerBotModel {
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected UUID id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "tenant_id", nullable = false)
     private TenantModel tenant;
 

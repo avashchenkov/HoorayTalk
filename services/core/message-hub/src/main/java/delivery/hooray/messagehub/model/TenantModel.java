@@ -22,7 +22,7 @@ public class TenantModel {
     @JoinColumn(name = "ai_assistant_start_instruction")
     private AiAssistantInstructionModel aiAssistantStartInstruction;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "customer_bot_id", nullable = false)
     private CustomerBotModel customerBot;
 

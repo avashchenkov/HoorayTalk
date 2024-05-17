@@ -40,12 +40,8 @@
             CREATE TABLE customer_bot
             (
                 id        UUID NOT NULL,
-                tenant_id UUID NOT NULL,
                 CONSTRAINT pk_customer_bot PRIMARY KEY (id)
             );
-
-            ALTER TABLE customer_bot
-                ADD CONSTRAINT uc_customer_bot_tenant UNIQUE (tenant_id);
         </sql>
     </changeSet>
 
@@ -156,54 +152,6 @@
     <changeSet id="10" author="new-dummy-user">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="chat"/>
-            </not>
-        </preConditions>
-        <sql>
-            CREATE TABLE chat
-            (
-                id                          UUID NOT NULL,
-                tenant_id                   UUID,
-                ai_assistant_instruction_id UUID,
-                CONSTRAINT pk_chat PRIMARY KEY (id)
-            );
-
-            ALTER TABLE chat
-                ADD CONSTRAINT FK_CHAT_ON_AI_ASSISTANT_INSTRUCTION FOREIGN KEY (ai_assistant_instruction_id) REFERENCES ai_assistant_instruction (id);
-
-            CREATE INDEX idx_tenant_id ON chat (tenant_id);
-        </sql>
-    </changeSet>
-
-    <changeSet id="11" author="new-dummy-user">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="message"/>
-            </not>
-        </preConditions>
-        <sql>
-            CREATE TABLE message
-            (
-                id        UUID                     NOT NULL,
-                chat_id   UUID                     NOT NULL,
-                timestamp TIMESTAMP WITH TIME ZONE NOT NULL,
-                author    VARCHAR(255)             NOT NULL,
-                content   TEXT                     NOT NULL,
-                CONSTRAINT pk_message PRIMARY KEY (id)
-            );
-
-            CREATE INDEX idx_timestamp ON message (timestamp);
-
-            ALTER TABLE message
-                ADD CONSTRAINT FK_MESSAGE_ON_CHAT FOREIGN KEY (chat_id) REFERENCES chat (id);
-
-            CREATE INDEX idx_chat_id ON message (chat_id);
-        </sql>
-    </changeSet>
-
-    <changeSet id="12" author="new-dummy-user">
-        <preConditions onFail="MARK_RAN">
-            <not>
                 <tableExists tableName="tenant"/>
             </not>
         </preConditions>
@@ -239,33 +187,54 @@
         </sql>
     </changeSet>
 
-    <changeSet id="13" author="new-dummy-user">
+    <changeSet id="11" author="new-dummy-user">
         <preConditions onFail="MARK_RAN">
             <not>
-                <sqlCheck expectedResult="0">
-                    SELECT COUNT(*) FROM information_schema.table_constraints
-                    WHERE constraint_name='FK_CUSTOMER_BOT_ON_TENANT' AND table_name='customer_bot';
-                </sqlCheck>
+                <tableExists tableName="chat"/>
             </not>
         </preConditions>
         <sql>
-            ALTER TABLE customer_bot
-                ADD CONSTRAINT FK_CUSTOMER_BOT_ON_TENANT FOREIGN KEY (tenant_id) REFERENCES tenant (id);
+            CREATE TABLE chat
+            (
+                id                          UUID NOT NULL,
+                tenant_id                   UUID,
+                ai_assistant_instruction_id UUID,
+                CONSTRAINT pk_chat PRIMARY KEY (id)
+            );
+
+            ALTER TABLE chat
+                ADD CONSTRAINT FK_CHAT_ON_AI_ASSISTANT_INSTRUCTION FOREIGN KEY (ai_assistant_instruction_id) REFERENCES ai_assistant_instruction (id);
+
+            ALTER TABLE chat
+                ADD CONSTRAINT FK_CHAT_ON_TENANT FOREIGN KEY (tenant_id) REFERENCES tenant (id);
+
+            CREATE INDEX idx_tenant_id ON chat (tenant_id);
         </sql>
     </changeSet>
 
-    <changeSet id="14" author="new-dummy-user">
+    <changeSet id="12" author="new-dummy-user">
         <preConditions onFail="MARK_RAN">
             <not>
-                <sqlCheck expectedResult="0">
-                    SELECT COUNT(*) FROM information_schema.table_constraints
-                    WHERE constraint_name='FK_CHAT_ON_TENANT' AND table_name='chat';
-                </sqlCheck>
+                <tableExists tableName="message"/>
             </not>
         </preConditions>
         <sql>
-            ALTER TABLE chat
-                ADD CONSTRAINT FK_CHAT_ON_TENANT FOREIGN KEY (tenant_id) REFERENCES tenant (id);
+            CREATE TABLE message
+            (
+                id        UUID                     NOT NULL,
+                chat_id   UUID                     NOT NULL,
+                timestamp TIMESTAMP WITH TIME ZONE NOT NULL,
+                author    VARCHAR(255)             NOT NULL,
+                content   TEXT                     NOT NULL,
+                CONSTRAINT pk_message PRIMARY KEY (id)
+            );
+
+            CREATE INDEX idx_timestamp ON message (timestamp);
+
+            ALTER TABLE message
+                ADD CONSTRAINT FK_MESSAGE_ON_CHAT FOREIGN KEY (chat_id) REFERENCES chat (id);
+
+            CREATE INDEX idx_chat_id ON message (chat_id);
         </sql>
     </changeSet>
 
