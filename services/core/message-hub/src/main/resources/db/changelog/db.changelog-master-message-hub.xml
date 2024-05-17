@@ -55,7 +55,6 @@
             CREATE TABLE telegram_customer_bot
             (
                 id              UUID NOT NULL,
-                telegram_bot_id UUID NOT NULL,
                 CONSTRAINT pk_telegram_customer_bot PRIMARY KEY (id)
             );
 
@@ -89,7 +88,6 @@
             CREATE TABLE discord_server_admin_bot
             (
                 id             UUID         NOT NULL,
-                discord_bot_id UUID         NOT NULL,
                 guild_id       VARCHAR(255) NOT NULL,
                 CONSTRAINT pk_discord_server_admin_bot PRIMARY KEY (id)
             );
@@ -124,7 +122,6 @@
             CREATE TABLE openai_ai_assistant
             (
                 id                          UUID NOT NULL,
-                openai_assistant_account_id UUID NOT NULL,
                 CONSTRAINT pk_openai_ai_assistant PRIMARY KEY (id)
             );
 

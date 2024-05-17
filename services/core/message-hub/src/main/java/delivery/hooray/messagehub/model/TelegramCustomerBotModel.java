@@ -10,11 +10,4 @@ import java.util.UUID;
 public class TelegramCustomerBotModel extends CustomerBotModel {
 
     protected TelegramCustomerBotModel() {}
-
-    @Column(name= "telegram_bot_id", nullable = false)
-    private UUID telegramBotId;
-
-    public UUID getTelegramBotId() {
-        return telegramBotId;
-    }
 }

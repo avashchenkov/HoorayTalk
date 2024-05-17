@@ -12,11 +12,4 @@ public class OpenAiAiAssistantModel extends AiAssistantModel {
 
     protected OpenAiAiAssistantModel() {
     }
-
-    @Column(name= "openai_assistant_account_id", nullable = false)
-    private UUID openaiAssistantAccountId;
-
-    public UUID getOpenaiAssistantAccountId() {
-        return openaiAssistantAccountId;
-    }
 }

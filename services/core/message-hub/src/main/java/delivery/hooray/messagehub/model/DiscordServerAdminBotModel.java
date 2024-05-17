@@ -11,15 +11,8 @@ public class DiscordServerAdminBotModel extends AdminBotModel {
 
     protected DiscordServerAdminBotModel() {}
 
-    @Column(name= "discord_bot_id", nullable = false)
-    private UUID discordBotId;
-
     @Column(name= "guild_id", nullable = false)
     private String guildId;
-
-    public UUID getDiscordBotId() {
-        return discordBotId;
-    }
 
     public String getGuildId() {
         return guildId;
