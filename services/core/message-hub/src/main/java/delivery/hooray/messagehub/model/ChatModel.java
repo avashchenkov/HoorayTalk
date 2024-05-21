@@ -14,6 +14,11 @@ public class ChatModel {
     protected ChatModel() {
     }
 
+    public ChatModel(String customerChatId, String adminChatId) {
+        this.customerChatId = customerChatId;
+        this.adminChatId = adminChatId;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected UUID id;
@@ -26,8 +31,22 @@ public class ChatModel {
     @JoinColumn(name = "ai_assistant_instruction_id")
     protected AiAssistantInstructionModel aiAssistantInstruction;
 
+    @Column
+    protected String customerChatId;  // TODO: Add Index
+
+    @Column
+    protected String adminChatId;  // TODO: Add Index
+
     public UUID getId() {
         return id;
+    }
+
+    public String getCustomerChatId() {
+        return customerChatId;
+    }
+
+    public String getAdminChatId() {
+        return adminChatId;
     }
 
     public AiAssistantInstructionModel getAiAssistantInstruction() {

@@ -8,4 +8,6 @@ import java.util.UUID;
 
 @Repository
 public interface ChatRepository extends JpaRepository<ChatModel, UUID> {
+    ChatModel findByCustomerChatId(String customerChatId);
+    ChatModel findByAdminChatId(String adminChatId);
 }
