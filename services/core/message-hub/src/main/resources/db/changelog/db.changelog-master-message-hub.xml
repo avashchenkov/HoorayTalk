@@ -235,4 +235,26 @@
         </sql>
     </changeSet>
 
+    <changeSet id="13" author="new-dummy-user">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="chat" columnName="customer_chat_id"/>
+            </not>
+        </preConditions>
+        <sql>
+            ALTER TABLE chat ADD customer_chat_id TEXT;
+        </sql>
+    </changeSet>
+
+    <changeSet id="14" author="new-dummy-user">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="chat" columnName="admin_chat_id"/>
+            </not>
+        </preConditions>
+        <sql>
+            ALTER TABLE chat ADD admin_chat_id TEXT;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
