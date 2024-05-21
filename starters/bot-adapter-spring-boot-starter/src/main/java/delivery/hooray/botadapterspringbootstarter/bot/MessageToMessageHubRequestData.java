@@ -1,27 +1,23 @@
 package delivery.hooray.botadapterspringbootstarter.bot;
 
-import java.util.UUID;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public abstract class MessageToMessageHubRequestData {
-    private final UUID bot_id;
+    @JsonProperty("bot_id")
+    private final String botId;
+    @JsonProperty("message")
     private final String message;
-    private final String customer_chat_id;
 
-    public MessageToMessageHubRequestData(UUID bot_id, String message, String customer_chat_id) {
-        this.bot_id = bot_id;
+    public MessageToMessageHubRequestData(String botId, String message) {
+        this.botId = botId;
         this.message = message;
-        this.customer_chat_id = customer_chat_id;
     }
 
-    public UUID getBot_Id() {
-        return bot_id;
+    public String getBot_Id() {
+        return botId;
     }
 
     public String getMessage() {
         return message;
-    }
-
-    public String getCustomer_chat_id() {
-        return customer_chat_id;
     }
 }
