@@ -1,6 +1,8 @@
 package delivery.hooray.discordadapter.bot;
 
 import delivery.hooray.botadapterspringbootstarter.bot.MessageToCustomerRequestData;
+import delivery.hooray.botadapterspringbootstarter.bot.MessageToMessageHubRequestData;
+import delivery.hooray.botadapterspringbootstarter.service.MessageHubSenderService;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageBulkDeleteEvent;
@@ -40,6 +42,14 @@ public class DiscordBotImpl extends ListenerAdapter {
 
         if (channel.getType() == ChannelType.TEXT) {
             System.out.println("Message received in server channel: " + event.getMessage().getContentDisplay());
+
+            DiscordMessageToMessageHubRequestData data = new DiscordMessageToMessageHubRequestData(
+                    this.getBotId().toString(),
+                    event.getMessage().getContentDisplay(),
+                    event.getChannel().getId()
+            );
+
+            this.getDiscordBot().sendMsgToMessageHub(data);
         }
     }
 
