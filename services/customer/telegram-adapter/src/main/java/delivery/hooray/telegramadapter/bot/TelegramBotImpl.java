@@ -20,7 +20,14 @@ public class TelegramBotImpl extends TelegramLongPollingBot {
      */
     @Override
     public void onUpdateReceived(Update update) {
-        System.out.println(update.getMessage().getText());
+        String botId = this.getBotId().toString();
+        String chatId = update.getMessage().getChatId().toString();
+        String message = update.getMessage().getText();
+        TelegramMessageToMessageHubRequestData requestData;
+
+        requestData = new TelegramMessageToMessageHubRequestData(botId, message, chatId);
+
+        telegramBot.sendMsgToMessageHub(requestData);
     }
 
 
