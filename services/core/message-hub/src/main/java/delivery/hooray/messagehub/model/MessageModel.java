@@ -17,6 +17,13 @@ public class MessageModel {
         this.timestamp = Instant.now();
     }
 
+    public MessageModel(ChatModel chat, String author, String content) {
+        this();
+        this.chat = chat;
+        this.author = author;
+        this.content = content;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected UUID id;
