@@ -35,7 +35,10 @@ public class Bot {
     }
 
     public void sendMsgToMessageHub(MessageToMessageHubRequestData request) {
-        messageHubSenderService.sendMessage(request);
+        messageHubSenderService.sendMessage(request).subscribe(
+                result -> System.out.println("Operation successful: " + result),
+                error -> System.err.println("Operation failed: " + error.getMessage())
+        );
     }
 
     public void setId(UUID id) {
