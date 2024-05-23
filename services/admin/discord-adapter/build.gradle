@@ -150,7 +150,7 @@ test {
 liquibase {
 	activities {
 		main {
-			changeLogFile 'src/main/resources/db/changelog/db.changelog-master.xml'
+			changeLogFile 'src/main/resources/db/changelog/db.changelog-master-discord-adapter.xml'
 			url 'jdbc:postgresql://localhost:5432/discord_adapter_dev'
 			username 'postgres'
 			password 'postgres'
