@@ -1,7 +1,8 @@
 package delivery.hooray.discordadapter.bot;
 
 import delivery.hooray.botadapterspringbootstarter.bot.Bot;
-import delivery.hooray.botadapterspringbootstarter.bot.MessageToCustomerRequestData;
+import delivery.hooray.botadapterspringbootstarter.bot.MessageToBotEndUserRequestData;
+import delivery.hooray.discordadapter.bot.MessageToDiscordBotEndUserRequestData;
 import delivery.hooray.botadapterspringbootstarter.service.BotBehavior;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -15,14 +16,7 @@ public class DiscordBotBehavior implements BotBehavior {
      */
     @Override
     public void run(Bot bot) {
-        DiscordBot discordBot = (DiscordBot) bot;
-
-        JDABuilder builder = JDABuilder.createDefault(discordBot.getBotToken());
-
-        builder.enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT);
-
-        builder.addEventListeners(discordBot.getDiscordBotImpl());
-        builder.build();
+        bot.run();
     }
 
     /**
@@ -30,10 +24,11 @@ public class DiscordBotBehavior implements BotBehavior {
      * @param request
      */
     @Override
-    public void sendMsgToClient(Bot bot, MessageToCustomerRequestData request) {
+    public void sendMsgToBotApi(Bot bot, MessageToBotEndUserRequestData request) {
         DiscordBot discordBot = (DiscordBot) bot;
+        MessageToDiscordBotEndUserRequestData discordBotRequest = (MessageToDiscordBotEndUserRequestData) request;
 
-        discordBot.getDiscordBotImpl().sendMsgToClient(request);
+        discordBot.getDiscordBotImpl().sendMsgToClient(discordBotRequest);
     }
 
     @Override

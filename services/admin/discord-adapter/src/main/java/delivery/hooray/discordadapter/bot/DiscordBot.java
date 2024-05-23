@@ -19,6 +19,11 @@ public class DiscordBot extends Bot {
         this.discordBotImpl = new DiscordBotImpl(this);
     }
 
+    @Override
+    public void run() {
+        this.getDiscordBotImpl().run();
+    }
+
     public DiscordBotImpl getDiscordBotImpl() {
         return this.discordBotImpl;
     }

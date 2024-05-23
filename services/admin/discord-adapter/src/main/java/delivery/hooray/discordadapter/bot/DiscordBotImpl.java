@@ -1,9 +1,8 @@
 package delivery.hooray.discordadapter.bot;
 
-import delivery.hooray.botadapterspringbootstarter.bot.MessageToCustomerRequestData;
-import delivery.hooray.botadapterspringbootstarter.bot.MessageToMessageHubRequestData;
-import delivery.hooray.botadapterspringbootstarter.service.MessageHubSenderService;
+import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageBulkDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
@@ -14,16 +13,21 @@ import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveAllEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEmojiEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+
 
 import java.util.UUID;
 
 
 public class DiscordBotImpl extends ListenerAdapter {
     private final DiscordBot discordBot;
+    private JDA jda;
 
 
     public DiscordBotImpl(DiscordBot discordBot) {
         this.discordBot = discordBot;
+        this.jda = null;
     }
 
 
@@ -31,13 +35,30 @@ public class DiscordBotImpl extends ListenerAdapter {
     /**
      * @return
      */
-    public void sendMsgToClient(MessageToCustomerRequestData data) {
-        System.out.println(data.getMessage());
+    public void sendMsgToClient(MessageToDiscordBotEndUserRequestData data) {
+        TextChannel channel = jda.getTextChannelById(data.getChat_id());
+        if (channel != null) {
+            channel.sendMessage(data.getMessage()).queue();
+        } else {
+            throw new IllegalArgumentException("Channel with ID " + data.getChat_id() + " not found");
+        }
     }
 
+    public void run() {
+        JDABuilder builder = JDABuilder.createDefault(discordBot.getBotToken());
+
+        builder.enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT);
+
+        builder.addEventListeners(discordBot.getDiscordBotImpl());
+        this.jda = builder.build();
+    }
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
+        if (event.getAuthor().getId().equals(jda.getSelfUser().getId())) {
+            return;
+        }
+
         MessageChannel channel = event.getChannel();
 
         if (channel.getType() == ChannelType.TEXT) {
