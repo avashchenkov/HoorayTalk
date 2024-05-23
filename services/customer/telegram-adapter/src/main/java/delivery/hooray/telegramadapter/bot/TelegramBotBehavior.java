@@ -1,7 +1,7 @@
 package delivery.hooray.telegramadapter.bot;
 
 import delivery.hooray.botadapterspringbootstarter.bot.Bot;
-import delivery.hooray.botadapterspringbootstarter.bot.MessageToCustomerRequestData;
+import delivery.hooray.botadapterspringbootstarter.bot.MessageToBotEndUserRequestData;
 import delivery.hooray.botadapterspringbootstarter.service.BotBehavior;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -38,10 +38,11 @@ public class TelegramBotBehavior implements BotBehavior {
      * @param request
      */
     @Override
-    public void sendMsgToClient(Bot bot, MessageToCustomerRequestData request) {
+    public void sendMsgToBotApi(Bot bot, MessageToBotEndUserRequestData request) {
         TelegramBot telegramBot = (TelegramBot) bot;
+        MessageToTelegramBotEndUserRequestData requestData = (MessageToTelegramBotEndUserRequestData) request;
 
-        telegramBot.getTelegramBotImpl().sendMsgToClient(request);
+        telegramBot.getTelegramBotImpl().sendMsgToClient(requestData);
     }
 
     @Override

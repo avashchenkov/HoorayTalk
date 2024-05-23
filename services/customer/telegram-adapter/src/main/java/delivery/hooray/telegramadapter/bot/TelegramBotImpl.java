@@ -1,6 +1,6 @@
 package delivery.hooray.telegramadapter.bot;
 
-import delivery.hooray.botadapterspringbootstarter.bot.MessageToCustomerRequestData;
+import delivery.hooray.botadapterspringbootstarter.bot.MessageToBotEndUserRequestData;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -34,7 +34,7 @@ public class TelegramBotImpl extends TelegramLongPollingBot {
     /**
      * @return
      */
-    public void sendMsgToClient(MessageToCustomerRequestData data) {
+    public void sendMsgToClient(MessageToTelegramBotEndUserRequestData data) {
         System.out.println(data.getMessage());  // TODO: it is not used anywhere
     }
 

@@ -1,6 +1,5 @@
 package delivery.hooray.telegramadapter.api.controller;
 
-import delivery.hooray.botadapterspringbootstarter.bot.MessageToCustomerRequestData;
 import delivery.hooray.botadapterspringbootstarter.service.BotService;
 import delivery.hooray.telegramadapter.api.MessageApi;
 import delivery.hooray.telegramadapter.bot.TelegramBot;
