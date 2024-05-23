@@ -56,4 +56,8 @@ public class ChatModel {
     public void setAiAssistantInstruction(AiAssistantInstructionModel aiAssistantInstruction) {
         this.aiAssistantInstruction = aiAssistantInstruction;
     }
+
+    public TenantModel getTenant() {
+        return tenant;
+    }
 }
