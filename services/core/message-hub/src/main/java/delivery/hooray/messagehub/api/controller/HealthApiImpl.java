@@ -1,6 +1,6 @@
 package delivery.hooray.messagehub.api.controller;
 
-import delivery.hooray.discordadapter.api.HealthApi;
+import delivery.hooray.messagehub.api.HealthApi;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
