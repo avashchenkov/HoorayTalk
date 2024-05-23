@@ -30,8 +30,8 @@ public class Bot {
     }
 
     // TODO: move it to the client services as the signature is unknown here
-    public void sendMsgToBotEndUser(MessageToCustomerRequestData request) {
-        botBehavior.sendMsgToClient(this, request);
+    public void sendMsgToBotEndUser(MessageToBotEndUserRequestData request) {
+        botBehavior.sendMsgToBotApi(this, request);
     }
 
     public void sendMsgToMessageHub(MessageToMessageHubRequestData request) {
