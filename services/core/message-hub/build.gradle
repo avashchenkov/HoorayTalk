@@ -75,9 +75,9 @@ openApiGenerate {
 	generatorName = 'spring'
 	inputSpec = "$projectDir/src/main/resources/openapi.yaml"
 	outputDir = layout.buildDirectory.dir('generated').get().asFile.absolutePath
-	apiPackage = 'delivery.hooray.discordadapter.api'
-	modelPackage = 'delivery.hooray.discordadapter.model'
-	invokerPackage = 'delivery.hooray.discordadapter.invoker'
+	apiPackage = 'delivery.hooray.messagehub.api'
+	modelPackage = 'delivery.hooray.messagehub.model'
+	invokerPackage = 'delivery.hooray.messagehub.invoker'
 	configOptions = [
 			interfaceOnly : 'true',
 			useTags: 'true',
@@ -121,7 +121,7 @@ jar {
 }
 
 contracts {
-	baseClassForTests = 'delivery.hooray.discordadapter.MessageHubApplicationTests'
+	baseClassForTests = 'delivery.hooray.messagehub.MessageHubApplicationTests'
 }
 
 test {
