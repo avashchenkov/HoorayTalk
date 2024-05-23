@@ -45,4 +45,12 @@ public class TenantModel {
     public AiAssistantInstructionModel getAiAssistantStartInstruction() {
         return aiAssistantStartInstruction;
     }
+
+    public CustomerBotModel getCustomerBot() {
+        return customerBot;
+    }
+
+    public AdminBotModel getAdminBot() {
+        return adminBot;
+    }
 }
