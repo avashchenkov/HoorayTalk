@@ -90,7 +90,7 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-openApiGenerate {
+openApiGenerate {  //TODO: generate & use client api code like in message-service
 	generatorName = 'spring'
 	inputSpec = "$projectDir/src/main/resources/openapi.yaml"
 	outputDir = layout.buildDirectory.dir('generated').get().asFile.absolutePath
