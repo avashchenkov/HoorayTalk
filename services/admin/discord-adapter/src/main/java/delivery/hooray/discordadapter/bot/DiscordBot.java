@@ -10,6 +10,7 @@ import delivery.hooray.botadapterspringbootstarter.service.MessageHubSenderServi
  */
 public class DiscordBot extends Bot {
     private final DiscordBotImpl discordBotImpl;
+    private String guildId;
 
     public DiscordBot(MessageHubSenderService messageHubSenderService,
                       BotBehavior botBehavior,
@@ -26,5 +27,13 @@ public class DiscordBot extends Bot {
 
     public DiscordBotImpl getDiscordBotImpl() {
         return this.discordBotImpl;
+    }
+
+    public void setGuildId(String guildId) {
+        this.guildId = guildId;
+    }
+
+    public String getGuildId() {
+        return this.guildId;
     }
 }

@@ -1,19 +1,31 @@
 package delivery.hooray.botadapterspringbootstarter.bot;
 
-public abstract class MessageToBotEndUserRequestData {
-    private final String message;
-    private final String chat_id;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    public MessageToBotEndUserRequestData(String message, String chat_id) {
+public abstract class MessageToBotEndUserRequestData {
+    @JsonProperty("message")
+    private String message;
+    @JsonProperty("chat_id")
+    private String chatId;
+
+    public MessageToBotEndUserRequestData(String message, String chatId) {
         this.message = message;
-        this.chat_id = chat_id;
+        this.chatId = chatId;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public String getChat_id() {
-        return chat_id;
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(String chat_id) {
+        this.chatId = chat_id;
     }
 }

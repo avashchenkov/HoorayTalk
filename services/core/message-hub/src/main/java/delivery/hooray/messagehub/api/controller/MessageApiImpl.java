@@ -1,10 +1,10 @@
 package delivery.hooray.messagehub.api.controller;
 
-import delivery.hooray.discordadapter.api.MessageApi;
-import delivery.hooray.discordadapter.model.HandleAdminMessageRequest;
-import delivery.hooray.discordadapter.model.HandleCustomerMessageRequest;
-import delivery.hooray.messagehub.service.AdminMessageDto;
-import delivery.hooray.messagehub.service.CustomerMessageDto;
+import delivery.hooray.messagehub.api.MessageApi;
+import delivery.hooray.messagehub.model.HandleAdminMessageRequest;
+import delivery.hooray.messagehub.model.HandleCustomerMessageRequest;
+import delivery.hooray.messagehub.service.admin.MessageToAdminAdapterDto;
+import delivery.hooray.messagehub.service.customer.MessageToCustomerAdapterDto;
 import delivery.hooray.messagehub.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,22 +23,22 @@ public class MessageApiImpl implements MessageApi {
 
     @Override
     public ResponseEntity<Void> handleAdminMessage(HandleAdminMessageRequest handleAdminMessageRequest) {
-        AdminMessageDto adminMessageDto = new AdminMessageDto(handleAdminMessageRequest.getBotId(),
+        MessageToAdminAdapterDto messageToAdminAdapterDto = new MessageToAdminAdapterDto(handleAdminMessageRequest.getBotId(),
                                                               handleAdminMessageRequest.getAdminChatId(),
                                                               handleAdminMessageRequest.getMessage());
 
-        messageService.handleAdminMessage(adminMessageDto);
+        messageService.handleAdminMessage(messageToAdminAdapterDto);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<Void> handleCustomerMessage(HandleCustomerMessageRequest handleCustomerMessageRequest) {
-        CustomerMessageDto customerMessageDto = new CustomerMessageDto(handleCustomerMessageRequest.getBotId(),
+        MessageToCustomerAdapterDto messageToCustomerAdapterDto = new MessageToCustomerAdapterDto(handleCustomerMessageRequest.getBotId(),
                                                                         handleCustomerMessageRequest.getCustomerChatId(),
                                                                         handleCustomerMessageRequest.getMessage());
 
-        messageService.handleCustomerMessage(customerMessageDto);
+        messageService.handleCustomerMessage(messageToCustomerAdapterDto);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

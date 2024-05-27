@@ -1,6 +1,7 @@
 package delivery.hooray.discordadapter.bot;
 
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
@@ -15,9 +16,11 @@ import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.requests.restaction.ChannelAction;
 
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 
 public class DiscordBotImpl extends ListenerAdapter {
@@ -36,12 +39,35 @@ public class DiscordBotImpl extends ListenerAdapter {
      * @return
      */
     public void sendMsgToClient(MessageToDiscordBotEndUserRequestData data) {
-        TextChannel channel = jda.getTextChannelById(data.getChat_id());
+        TextChannel channel = jda.getTextChannelById(data.getChatId());
         if (channel != null) {
             channel.sendMessage(data.getMessage()).queue();
         } else {
-            throw new IllegalArgumentException("Channel with ID " + data.getChat_id() + " not found");
+            throw new IllegalArgumentException("Channel with ID " + data.getChatId() + " not found");
         }
+    }
+
+    public CompletableFuture<String> createChannel(String newChannelName) {
+        CompletableFuture<String> future = new CompletableFuture<>();
+
+        Guild guild = jda.getGuildById(this.discordBot.getGuildId());
+        if (guild != null) {
+            ChannelAction<TextChannel> action = guild.createTextChannel(newChannelName);
+            action.queue(
+                    channel -> {
+                        System.out.println("Channel created: " + channel.getName());
+                        future.complete(channel.getId()); // Complete the future with the channel ID
+                    },
+                    throwable -> {
+                        System.err.println("Failed to create channel: " + throwable.getMessage());
+                        future.completeExceptionally(throwable); // Complete the future exceptionally
+                    }
+            );
+        } else {
+            future.completeExceptionally(new IllegalArgumentException("Guild not found"));
+        }
+
+        return future;
     }
 
     public void run() {
