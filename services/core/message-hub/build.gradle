@@ -71,15 +71,14 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-openApiGenerate {
+tasks.register("openApiGenerateMessageHub", org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
 	generatorName = 'spring'
 	inputSpec = "$projectDir/src/main/resources/openapi.yaml"
-	outputDir = layout.buildDirectory.dir('generated').get().asFile.absolutePath
+	outputDir = "$buildDir/generated"
 	apiPackage = 'delivery.hooray.messagehub.api'
 	modelPackage = 'delivery.hooray.messagehub.model'
-	invokerPackage = 'delivery.hooray.messagehub.invoker'
 	configOptions = [
-			interfaceOnly : 'true',
+			interfaceOnly: 'true',
 			useTags: 'true',
 			useBeanValidation: 'true',
 			performBeanValidation: 'true',
@@ -89,10 +88,48 @@ openApiGenerate {
 	]
 }
 
+tasks.register("openApiGenerateDiscordAdapter", org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+	generatorName = 'spring'
+	inputSpec = "$projectDir/src/main/resources/client-api/discordadapter-openapi.yaml"
+	outputDir = "$buildDir/generated/discordadapter"
+	apiPackage = 'delivery.hooray.discordadapter.api'
+	modelPackage = 'delivery.hooray.discordadapter.model'
+	configOptions = [
+			interfaceOnly: 'true',
+			useTags: 'true',
+			useBeanValidation: 'true',
+			performBeanValidation: 'true',
+			dateLibrary: 'java8',
+			library: 'spring-boot',
+			useSpringBoot3: 'true'
+	]
+}
+
+tasks.register("openApiGenerateTelegramAdapter", org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+	generatorName = 'spring'
+	inputSpec = "$projectDir/src/main/resources/client-api/telegramadapter-openapi.yaml"
+	outputDir = "$buildDir/generated/telegramadapter"
+	apiPackage = 'delivery.hooray.telegramadapter.api'
+	modelPackage = 'delivery.hooray.telegramadapter.model'
+	configOptions = [
+			interfaceOnly: 'true',
+			useTags: 'true',
+			useBeanValidation: 'true',
+			performBeanValidation: 'true',
+			dateLibrary: 'java8',
+			library: 'spring-boot',
+			useSpringBoot3: 'true'
+	]
+}
+
+tasks.named('compileJava').configure {
+	dependsOn 'openApiGenerateMessageHub', 'openApiGenerateDiscordAdapter', 'openApiGenerateTelegramAdapter'
+}
+
 sourceSets {
 	main {
 		java {
-			srcDirs 'src/main/java', "$buildDir/generated/src/main/java"
+			srcDirs 'src/main/java', "$buildDir/generated/src/main/java", "$buildDir/generated/discordadapter/src/main/java", "$buildDir/generated/telegramadapter/src/main/java"
 		}
 		resources {
 			srcDirs 'src/main/resources'
@@ -102,10 +139,6 @@ sourceSets {
 
 processResources {
 	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-}
-
-tasks.named('compileJava').configure {
-	dependsOn tasks.named('openApiGenerate')
 }
 
 jar {

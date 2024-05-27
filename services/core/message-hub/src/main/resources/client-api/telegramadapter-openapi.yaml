@@ -1,13 +1,13 @@
 openapi: 3.0.0
 info:
-  title: HoorayTalk Discord Admin Adapter API
-  description: This is the HoorayTalk Discord Admin Adapter API specification for internal use.
+  title: HoorayTalk Telegram Customer Adapter API
+  description: This is the HoorayTalk Telegram Customer Adapter API specification for internal use.
   license:
     name: MIT License (MIT)
     url: https://opensource.org/licenses/MIT
   version: 1.0.0
 servers:
-  - url: https://discord-admin-adapter/v1
+  - url: https://telegram-customer-adapter/v1
 tags:
   - name: message
     description: Message operations
@@ -18,8 +18,8 @@ paths:
     post:
       tags:
         - message
-      summary: Send a message to the admins via Discord API
-      description: Send a message to the admins via Discord API
+      summary: Send a message to the customer via Telegram Bot
+      description: Send a message to the customer via Telegram Bot
       operationId: sendMessage
       requestBody:
         content:
@@ -30,16 +30,14 @@ paths:
       responses:
         '200':
           description: Successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SendMessageResponse'
         '400':
           description: Invalid input
         '401':
           description: Unauthorized
         '500':
           description: Internal server error
+        '503':
+          description: Service is unavailable
       security:
         - IntraServiceApiKeyAuth: [ ]
   /api/v1/health:
@@ -52,28 +50,28 @@ paths:
       responses:
         '200':
           description: Service is healthy
-        '401':
-          description: Unauthorized
+        '503':
+          description: Service is unavailable
 components:
   schemas:
     SendMessageRequest:
       type: object
       required:
         - bot_id
+        - customer_chat_id
         - message
       properties:
         bot_id:
           type: string
           description: Unique identifier of the bot
-        admin_chat_id:
+        customer_chat_id:
           type: string
           description: Unique identifier of the target chat
         message:
           type: string
           description: Text of the message to be sent to the customer
-    SendMessageResponse:
-      type: object
-      properties:
-        admin_chat_id:
-          type: string
-          description: Unique identifier of the target chat created
+  securitySchemes:
+    IntraServiceApiKeyAuth:
+      type: apiKey
+      name: API-KEY
+      in: header
