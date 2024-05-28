@@ -7,9 +7,9 @@ import delivery.hooray.messagehub.model.common.TenantModel;
 import delivery.hooray.messagehub.repository.common.ChatRepository;
 import delivery.hooray.messagehub.repository.common.MessageRepository;
 import delivery.hooray.messagehub.repository.common.TenantRepository;
-import delivery.hooray.messagehub.service.admin.MessageToAdminAdapterDto;
+import delivery.hooray.messagehub.service.admin.MessageFromAdminAdapterDto;
 import delivery.hooray.messagehub.service.admin.discord.DiscordSenderService;
-import delivery.hooray.messagehub.service.customer.MessageToCustomerAdapterDto;
+import delivery.hooray.messagehub.service.customer.MessageFromCustomerAdapterDto;
 import delivery.hooray.messagehub.service.customer.telegram.TelegramSenderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ public class MessageService {
     private final TenantRepository tenantRepository;
 
     @Autowired
-    public MessageService(ChatRepository chatRepository,    // TODO: too many arguments here
+    public MessageService(ChatRepository chatRepository,    // TODO: too many arguments
                           MessageRepository messageRepository,
                           DiscordSenderService discordSenderService,
                           TelegramSenderService telegramSenderService,
@@ -37,7 +37,7 @@ public class MessageService {
         this.tenantRepository = tenantRepository;
     }
 
-    public void handleCustomerMessage(MessageToCustomerAdapterDto messageDto) {
+    public void handleCustomerMessage(MessageFromCustomerAdapterDto messageDto) {
         ChatModel chatModel;
 
         try {
@@ -50,8 +50,6 @@ public class MessageService {
         MessageModel messageModel = new MessageModel(chatModel, messageDto.getCustomerChatId(), messageDto.getMessage());
 
         messageRepository.save(messageModel);
-
-        //System.out.println("Handling customer message: " + messageDto.getMessage());
 
         TenantModel tenantModel = chatModel.getTenant();
 
@@ -73,7 +71,7 @@ public class MessageService {
         );
     }
 
-    public void handleAdminMessage(MessageToAdminAdapterDto messageDto) {
+    public void handleAdminMessage(MessageFromAdminAdapterDto messageDto) {
         ChatModel chatModel;
 
         try {
@@ -101,8 +99,8 @@ public class MessageService {
         );
     }
 
-    protected ChatModel getChatModel(MessageToCustomerAdapterDto messageToCustomerAdapterDto) {
-        ChatModel chatModel = chatRepository.findByCustomerChatId(messageToCustomerAdapterDto.getCustomerChatId());
+    protected ChatModel getChatModel(MessageFromCustomerAdapterDto messageFromCustomerAdapterDto) {
+        ChatModel chatModel = chatRepository.findByCustomerChatId(messageFromCustomerAdapterDto.getCustomerChatId());
 
         if (chatModel != null) {
             return chatModel;
@@ -111,8 +109,8 @@ public class MessageService {
         }
     }
 
-    protected ChatModel getChatModel(MessageToAdminAdapterDto messageToAdminAdapterDto) {
-        ChatModel chatModel = chatRepository.findByAdminChatId(messageToAdminAdapterDto.getAdminChatId());
+    protected ChatModel getChatModel(MessageFromAdminAdapterDto messageFromAdminAdapterDto) {
+        ChatModel chatModel = chatRepository.findByAdminChatId(messageFromAdminAdapterDto.getAdminChatId());
 
         if (chatModel != null) {
             return chatModel;

@@ -3,12 +3,12 @@ package delivery.hooray.messagehub.service.customer;
 import java.util.UUID;
 
 
-public class MessageToCustomerAdapterDto {
+public class MessageFromCustomerAdapterDto {
     private UUID botId;
     private String customerChatId;
     private String message;
 
-    public MessageToCustomerAdapterDto(String botId, String customerChatId, String message) {
+    public MessageFromCustomerAdapterDto(String botId, String customerChatId, String message) {
         this.botId = UUID.fromString(botId);
         this.customerChatId = customerChatId;
         this.message = message;
