@@ -92,6 +92,9 @@ components:
         message:
           type: string
           description: Text of the message to be sent to the customer
+        customer_display_name:
+          type: string
+          description: It may be a phone number or a name of the customer something that can be displayed in the chat name
     HandleAdminMessageRequest:
       type: object
       required:

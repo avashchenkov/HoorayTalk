@@ -7,11 +7,13 @@ public class MessageFromCustomerAdapterDto {
     private UUID botId;
     private String customerChatId;
     private String message;
+    private String customerDisplayName;
 
-    public MessageFromCustomerAdapterDto(String botId, String customerChatId, String message) {
+    public MessageFromCustomerAdapterDto(String botId, String customerChatId, String message, String customerDisplayName) {
         this.botId = UUID.fromString(botId);
         this.customerChatId = customerChatId;
         this.message = message;
+        this.customerDisplayName = customerDisplayName;
     }
 
     public UUID getBotId() {
@@ -36,5 +38,13 @@ public class MessageFromCustomerAdapterDto {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getCustomerDisplayName() {
+        return customerDisplayName;
+    }
+
+    public void setCustomerDisplayName(String customerDisplayName) {
+        this.customerDisplayName = customerDisplayName;
     }
 }

@@ -6,6 +6,8 @@ import delivery.hooray.botadapterspringbootstarter.bot.MessageToMessageHubReques
 public class TelegramMessageToMessageHubRequestData extends MessageToMessageHubRequestData {
     @JsonProperty("customer_chat_id")
     private final String customerChatId;
+    @JsonProperty("customer_display_name")
+    private String customerDisplayName;
 
     public TelegramMessageToMessageHubRequestData(String botId, String message, String customerChatId) {
         super(botId, message);
@@ -15,5 +17,13 @@ public class TelegramMessageToMessageHubRequestData extends MessageToMessageHubR
 
     public String getCustomer_chat_id() {
         return customerChatId;
+    }
+
+    public String getCustomerDisplayName() {
+        return customerDisplayName;
+    }
+
+    public void setCustomerDisplayName(String customerDisplayName) {
+        this.customerDisplayName = customerDisplayName;
     }
 }

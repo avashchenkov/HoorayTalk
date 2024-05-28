@@ -31,7 +31,7 @@ public class MessageApiImpl implements MessageApi {
         SendMessageResponse response;
 
         if (channelId == null) {
-            channelId = String.valueOf(bot.getDiscordBotImpl().createChannel("New Channel"));
+            channelId = String.valueOf(bot.getDiscordBotImpl().createChannel(sendMessageRequest.getCustomerDisplayName()));
             msg.setChatId(channelId);
         }
 

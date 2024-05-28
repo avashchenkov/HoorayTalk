@@ -1,8 +1,8 @@
 package delivery.hooray.telegramadapter.bot;
 
-import delivery.hooray.botadapterspringbootstarter.bot.MessageToBotEndUserRequestData;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.User;
 
 import java.util.UUID;
 
@@ -26,6 +26,15 @@ public class TelegramBotImpl extends TelegramLongPollingBot {
         TelegramMessageToMessageHubRequestData requestData;
 
         requestData = new TelegramMessageToMessageHubRequestData(botId, message, chatId);
+
+        User user = update.getMessage().getFrom();
+        String username = user.getUserName();
+
+        if (username != null) {
+            requestData.setCustomerDisplayName(username);
+        } else {
+            requestData.setCustomerDisplayName(chatId);
+        }
 
         telegramBot.sendMsgToMessageHub(requestData);
     }

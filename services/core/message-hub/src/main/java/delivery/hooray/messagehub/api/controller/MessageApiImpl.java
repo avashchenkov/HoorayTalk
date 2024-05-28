@@ -36,7 +36,8 @@ public class MessageApiImpl implements MessageApi {
     public ResponseEntity<Void> handleCustomerMessage(HandleCustomerMessageRequest handleCustomerMessageRequest) {
         MessageFromCustomerAdapterDto messageFromCustomerAdapterDto = new MessageFromCustomerAdapterDto(handleCustomerMessageRequest.getBotId(),
                                                                         handleCustomerMessageRequest.getCustomerChatId(),
-                                                                        handleCustomerMessageRequest.getMessage());
+                                                                        handleCustomerMessageRequest.getMessage(),
+                                                                        handleCustomerMessageRequest.getCustomerDisplayName());
 
         messageService.handleCustomerMessage(messageFromCustomerAdapterDto);
 

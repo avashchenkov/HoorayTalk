@@ -62,6 +62,7 @@ public class MessageService {
                         messageDto.getMessage());
 
         sendMessageRequest.setAdminChatId(adminChatId);
+        sendMessageRequest.setCustomerDisplayName(messageDto.getCustomerDisplayName());
 
         delivery.hooray.discordadapter.model.SendMessageResponse sendMessageResponse =
                 discordSenderService.sendMessage(sendMessageRequest).block();
