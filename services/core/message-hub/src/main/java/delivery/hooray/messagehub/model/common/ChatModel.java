@@ -14,9 +14,10 @@ public class ChatModel {
     protected ChatModel() {
     }
 
-    public ChatModel(String customerChatId, String adminChatId) {
+    public ChatModel(String customerChatId, String adminChatId, TenantModel tenant) {
         this.customerChatId = customerChatId;
         this.adminChatId = adminChatId;
+        this.tenant = tenant;
     }
 
     @Id

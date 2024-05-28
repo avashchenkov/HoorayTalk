@@ -1,6 +1,7 @@
 package delivery.hooray.messagehub.service;
 
 
+import delivery.hooray.messagehub.model.common.AdminBotModel;
 import delivery.hooray.messagehub.model.common.ChatModel;
 import delivery.hooray.messagehub.model.common.MessageModel;
 import delivery.hooray.messagehub.model.common.TenantModel;
@@ -38,37 +39,44 @@ public class MessageService {
     }
 
     public void handleCustomerMessage(MessageFromCustomerAdapterDto messageDto) {
-        ChatModel chatModel;
+        ChatModel chatModel = null;
+        String adminChatId = null;
+        TenantModel tenantModel;
 
         try {
             chatModel = getChatModel(messageDto);
+            adminChatId = chatModel.getAdminChatId();
         } catch (NotFoundException e) {  // TODO: use Optional instead of throwing exception
-            TenantModel tenantModel = tenantRepository.findByAdminBot_Id(messageDto.getBotId());
-            chatModel = null;
+        }
+
+        try {
+            tenantModel = tenantRepository.findByCustomerBot_Id(messageDto.getBotId());
+        } catch (NotFoundException ex) {
+            return;  //TODO: unknown bot case/incorrect setup
+        }
+
+        AdminBotModel adminBotModel = tenantModel.getAdminBot();
+
+        delivery.hooray.discordadapter.model.SendMessageRequest sendMessageRequest =
+                new delivery.hooray.discordadapter.model.SendMessageRequest(adminBotModel.getId().toString(),
+                        messageDto.getMessage());
+
+        sendMessageRequest.setAdminChatId(adminChatId);
+
+        delivery.hooray.discordadapter.model.SendMessageResponse sendMessageResponse =
+                discordSenderService.sendMessage(sendMessageRequest).block();
+
+        if (adminChatId == null) {
+            adminChatId = sendMessageResponse.getAdminChatId();
+
+            chatModel = new ChatModel(messageDto.getCustomerChatId(), adminChatId, tenantModel);
+
+            chatRepository.save(chatModel);
         }
 
         MessageModel messageModel = new MessageModel(chatModel, messageDto.getCustomerChatId(), messageDto.getMessage());
 
         messageRepository.save(messageModel);
-
-        TenantModel tenantModel = chatModel.getTenant();
-
-        delivery.hooray.discordadapter.model.SendMessageRequest sendMessageRequest =
-                new delivery.hooray.discordadapter.model.SendMessageRequest(tenantModel.getAdminBot().getId().toString(),
-                                                                       messageDto.getMessage());
-        sendMessageRequest.setAdminChatId(chatModel.getAdminChatId());
-
-        discordSenderService.sendMessage(sendMessageRequest).subscribe(
-                sendMessageResponse -> {
-                    System.out.println("Operation successful: " + sendMessageResponse);
-
-                    String adminChatId = sendMessageResponse.getAdminChatId();
-                    System.out.println("Admin Chat ID: " + adminChatId);
-                },
-                error -> {
-                    System.err.println("Operation failed: " + error.getMessage());
-                }
-        );
     }
 
     public void handleAdminMessage(MessageFromAdminAdapterDto messageDto) {
@@ -105,7 +113,7 @@ public class MessageService {
         if (chatModel != null) {
             return chatModel;
         } else {
-            throw new RuntimeException("Chat not found");  // TODO: handle this case
+            throw new NotFoundException("Chat not found");  // TODO: handle this case
         }
     }
 

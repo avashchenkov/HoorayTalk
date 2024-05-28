@@ -47,27 +47,20 @@ public class DiscordBotImpl extends ListenerAdapter {
         }
     }
 
-    public CompletableFuture<String> createChannel(String newChannelName) {
-        CompletableFuture<String> future = new CompletableFuture<>();
-
+    public String createChannel(String newChannelName) {
         Guild guild = jda.getGuildById(this.discordBot.getGuildId());
         if (guild != null) {
-            ChannelAction<TextChannel> action = guild.createTextChannel(newChannelName);
-            action.queue(
-                    channel -> {
-                        System.out.println("Channel created: " + channel.getName());
-                        future.complete(channel.getId()); // Complete the future with the channel ID
-                    },
-                    throwable -> {
-                        System.err.println("Failed to create channel: " + throwable.getMessage());
-                        future.completeExceptionally(throwable); // Complete the future exceptionally
-                    }
-            );
+            try {
+                TextChannel channel = guild.createTextChannel(newChannelName).complete();
+                System.out.println("Channel created: " + channel.getName());
+                return channel.getId();
+            } catch (Exception e) {
+                System.err.println("Failed to create channel: " + e.getMessage());
+                throw new RuntimeException("Failed to create channel", e);
+            }
         } else {
-            future.completeExceptionally(new IllegalArgumentException("Guild not found"));
+            throw new IllegalArgumentException("Guild not found");
         }
-
-        return future;
     }
 
     public void run() {

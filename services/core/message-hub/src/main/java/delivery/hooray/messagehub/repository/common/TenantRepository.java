@@ -9,4 +9,5 @@ import java.util.UUID;
 @Repository
 public interface TenantRepository extends JpaRepository<TenantModel, UUID> {
     TenantModel findByAdminBot_Id(UUID botId);
+    TenantModel findByCustomerBot_Id(UUID botId);
 }

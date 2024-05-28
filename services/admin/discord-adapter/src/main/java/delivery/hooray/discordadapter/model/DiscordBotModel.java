@@ -7,9 +7,16 @@ import jakarta.persistence.*;
 @DiscriminatorValue("Discord")
 public class DiscordBotModel extends BotModel {
 
+    @Column(name = "guild_id")
+    private String guildId;
+
     protected DiscordBotModel() {}
 
     public DiscordBotModel(String tokenEncrypted) {
         super(tokenEncrypted);
+    }
+
+    public String getGuildId() {
+        return guildId;
     }
 }
