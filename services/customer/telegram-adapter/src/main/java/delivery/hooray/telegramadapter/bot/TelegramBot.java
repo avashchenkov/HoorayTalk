@@ -31,4 +31,8 @@ public class TelegramBot extends Bot {
     public TelegramBotImpl getTelegramBotImpl() {
         return this.telegramBotImpl;
     }
+
+    public EncryptionService getEncryptionService() {
+        return this.encryptionService;
+    }
 }
