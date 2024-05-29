@@ -1,7 +1,12 @@
+import org.liquibase.gradle.LiquibaseTask
+
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.2.4'
 	id 'io.spring.dependency-management' version '1.1.4'
+	id 'org.openapi.generator' version '7.4.0'
+	id 'org.springframework.cloud.contract' version '4.1.2'
+	id 'org.liquibase.gradle' version '2.2.1'
 }
 
 group = 'delivery.hooray'
@@ -15,11 +20,130 @@ repositories {
 	mavenCentral()
 }
 
+ext {
+	set('springBootVersion', '3.2.4')
+	set('springCloudVersion', '4.1.2')
+	set('springMockMvcVersion', '5.4.0')
+	set('springdocVersion', '1.6.14')
+
+	set('jacksonDatabindNullableVersion', '0.2.6')
+
+	set('liquibaseVersion', '4.27.0')
+
+	set('hibernateVersion', '6.4.4.Final')
+
+	set('nettyVersion', '4.1.109.Final')
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation "org.springdoc:springdoc-openapi-ui:${springdocVersion}"
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+	implementation "org.hibernate:hibernate-core:${hibernateVersion}"
+
+	implementation "org.openapitools:jackson-databind-nullable:${jacksonDatabindNullableVersion}"
+
+	implementation "org.liquibase:liquibase-core:${liquibaseVersion}"
+	implementation 'info.picocli:picocli:4.7.5'
+
+	implementation 'org.postgresql:postgresql'
+
+	runtimeOnly "io.netty:netty-resolver-dns-native-macos:${nettyVersion}:osx-aarch_64"
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation "org.springframework.cloud:spring-cloud-starter-contract-verifier:${springCloudVersion}"
+	testImplementation "org.springframework.cloud:spring-cloud-contract-spec:${springCloudVersion}"
+	testImplementation "io.rest-assured:spring-mock-mvc:${springMockMvcVersion}"
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
+	}
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+tasks.register("openApiGenerateOpenAI", org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+	generatorName = 'spring'
+	inputSpec = "$projectDir/src/main/resources/openapi.yaml"
+	outputDir = "$buildDir/generated/"
+	apiPackage = 'delivery.hooray.openaiadapter.api'
+	modelPackage = 'delivery.hooray.openaiadapter.model'
+	configOptions = [
+			interfaceOnly: 'true',
+			useTags: 'true',
+			useBeanValidation: 'true',
+			performBeanValidation: 'true',
+			dateLibrary: 'java8',
+			library: 'spring-boot',
+			useSpringBoot3: 'true'
+	]
+}
+
+tasks.named('compileJava').configure {
+	dependsOn 'openApiGenerateOpenAI'
+}
+
+sourceSets {
+	main {
+		java {
+			srcDirs 'src/main/java', "$buildDir/generated/src/main/java"
+		}
+		resources {
+			srcDirs 'src/main/resources'
+		}
+	}
+}
+
+processResources {
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+jar {
+	archiveBaseName.set('openapi-spring')
+	archiveVersion.set('1.0.0')
+	manifest {
+		attributes(
+				'Implementation-Title': 'openapi-spring',
+				'Implementation-Version': archiveVersion.get()
+		)
+	}
+	exclude 'db/changelog/**'
+}
+
+contracts {
+	baseClassForTests = 'delivery.hooray.messagehub.OpenaiApplicationTests'
+}
+
+test {
+	dependsOn 'generateContractTests'
+}
+
+liquibase {
+	activities {
+		main {
+			changeLogFile 'src/main/resources/db/changelog/db.changelog-master.xml'
+			url 'jdbc:postgresql://localhost:5432/message_hub_dev'
+			username 'postgres'
+			password 'postgres'
+			classpath 'src/main/resources'
+		}
+	}
+	runList = 'main'
+}
+
+configurations {
+	liquibaseRuntime.extendsFrom implementation
+}
+
+tasks.withType(LiquibaseTask) {
+	classpath = configurations.liquibaseRuntime
 }
