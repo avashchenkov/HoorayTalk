@@ -1,4 +1,4 @@
-package delivery.hooray.openaiadapter;
+package delivery.hooray.aiassistant;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
