@@ -75,8 +75,8 @@ tasks.register("openApiGenerateOpenAI", org.openapitools.generator.gradle.plugin
 	generatorName = 'spring'
 	inputSpec = "$projectDir/src/main/resources/openapi.yaml"
 	outputDir = "$buildDir/generated/"
-	apiPackage = 'delivery.hooray.openaiadapter.api'
-	modelPackage = 'delivery.hooray.openaiadapter.model'
+	apiPackage = 'delivery.hooray.aiassistant.api'
+	modelPackage = 'delivery.hooray.aiassistant.model'
 	configOptions = [
 			interfaceOnly: 'true',
 			useTags: 'true',
