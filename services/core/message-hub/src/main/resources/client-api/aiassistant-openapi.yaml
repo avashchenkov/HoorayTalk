@@ -1,13 +1,13 @@
 openapi: 3.0.0
 info:
-  title: HoorayTalk AI Adapter API
-  description: This is the HoorayTalk AI Adapter API specification for internal use.
+  title: HoorayTalk AI Assistant API
+  description: This is the HoorayTalk AI Assistant API specification for internal use.
   license:
     name: MIT License (MIT)
     url: https://opensource.org/licenses/MIT
   version: 1.0.0
 servers:
-  - url: https://openai-adapter/v1
+  - url: https://openai-assistant/v1
 tags:
   - name: chat
     description: Chat operations
@@ -30,6 +30,10 @@ paths:
       responses:
         '200':
           description: Successful operation
+          content:
+            text/plain:
+              schema:
+                type: string
         '400':
           description: Invalid input
         '401':
