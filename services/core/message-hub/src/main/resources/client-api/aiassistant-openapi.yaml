@@ -1,0 +1,82 @@
+openapi: 3.0.0
+info:
+  title: HoorayTalk AI Adapter API
+  description: This is the HoorayTalk AI Adapter API specification for internal use.
+  license:
+    name: MIT License (MIT)
+    url: https://opensource.org/licenses/MIT
+  version: 1.0.0
+servers:
+  - url: https://openai-adapter/v1
+tags:
+  - name: chat
+    description: Chat operations
+  - name: health
+    description: Health check operations
+paths:
+  /api/v1/chat:
+    post:
+      tags:
+        - chat
+      summary: Generate a response to a message using OpenAI LLM
+      description: Generate a response to a message using OpenAI LLM and send it to the target chat(s).
+      operationId: generateResponse
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompleteChatRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+      security:
+        - IntraServiceApiKeyAuth: [ ]
+  /api/v1/health:
+    get:
+      tags:
+        - health
+      summary: Service health check
+      description: Service health check endpoint to verify the service is running
+      operationId: getHealthStatus
+      responses:
+        '200':
+          description: Service is healthy
+        '401':
+          description: Unauthorized
+components:
+  schemas:
+    CompleteChatRequest:
+      type: object
+      required:
+        - assistant_id
+        - assistant_instruction
+        - messages
+      properties:
+        assistant_id:
+          type: string
+          description: Unique identifier of the bot
+        assistant_instruction:
+          type: string
+          description: Instruction for the AI to generate the response
+        messages:
+          type: array
+          description: |
+            An array of recent messages that provides context for the AI to generate a relevant response.
+            These messages should be ordered from oldest to newest and include the conversation history
+            necessary for the AI to understand the current state of the chat. This can include questions
+            from the user, responses from the bot/manager, and any other dialogue that helps the AI to produce
+            a coherent and contextually appropriate answer.
+          items:
+            type: string
+  securitySchemes:
+    IntraServiceApiKeyAuth:
+      type: apiKey
+      name: API-KEY
+      in: header

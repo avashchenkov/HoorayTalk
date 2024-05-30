@@ -55,14 +55,14 @@ components:
     CompleteChatRequest:
       type: object
       required:
-        - bot_id
-        - bot_instruction
+        - assistant_id
+        - assistant_instruction
         - messages
       properties:
-        bot_id:
+        assistant_id:
           type: string
           description: Unique identifier of the bot
-        bot_instruction:
+        assistant_instruction:
           type: string
           description: Instruction for the AI to generate the response
         messages:

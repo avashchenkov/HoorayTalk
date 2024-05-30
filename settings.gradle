@@ -1,7 +1,7 @@
-include ':discord-adapter', ':openai-adapter', ':message-hub', ':telegram-adapter', ':shared-lib',
+include ':discord-adapter', ':ai-assistant', ':message-hub', ':telegram-adapter', ':shared-lib',
         ':bot-adapter-spring-boot-starter'
 project(':discord-adapter').projectDir = new File('services/admin/discord-adapter')
-project(':openai-adapter').projectDir = new File('services/ai/openai-adapter')
+project(':ai-assistant').projectDir = new File('services/ai/ai-assistant')
 project(':message-hub').projectDir = new File('services/core/message-hub')
 project(':telegram-adapter').projectDir = new File('services/customer/telegram-adapter')
 project(':shared-lib').projectDir = new File('/shared-lib')
