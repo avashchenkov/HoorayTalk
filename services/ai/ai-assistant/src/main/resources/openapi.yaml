@@ -57,7 +57,7 @@ components:
       required:
         - assistant_id
         - assistant_instruction
-        - messages
+        - chatHistory
       properties:
         assistant_id:
           type: string
@@ -65,16 +65,11 @@ components:
         assistant_instruction:
           type: string
           description: Instruction for the AI to generate the response
-        messages:
-          type: array
+        chatHistory:
+          type: string
           description: |
-            An array of recent messages that provides context for the AI to generate a relevant response.
-            These messages should be ordered from oldest to newest and include the conversation history
-            necessary for the AI to understand the current state of the chat. This can include questions
-            from the user, responses from the bot/manager, and any other dialogue that helps the AI to produce
-            a coherent and contextually appropriate answer.
-          items:
-            type: string
+            A string representing the chat history, including recent messages that provide context for the AI to generate a relevant response.
+            This string should be formatted to include the conversation history necessary for the AI to understand the current state of the chat.
   securitySchemes:
     IntraServiceApiKeyAuth:
       type: apiKey
