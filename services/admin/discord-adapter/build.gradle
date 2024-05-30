@@ -44,6 +44,8 @@ ext {
 
 	set('sharedLibVersion', '1.0.0')
 	set('botAdapterStarterVersion', '1.0.0')
+
+	set('httpclientVersion', '4.5.14')
 }
 
 dependencies {
@@ -78,6 +80,8 @@ dependencies {
 
 	implementation "delivery.hooray:shared-lib:${sharedLibVersion}"
 	implementation "delivery.hooray:bot-adapter-spring-boot-starter:${botAdapterStarterVersion}"
+
+	implementation "org.apache.httpcomponents:httpclient:${httpclientVersion}"
 }
 
 dependencyManagement {

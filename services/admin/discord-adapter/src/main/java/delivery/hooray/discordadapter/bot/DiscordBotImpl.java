@@ -1,5 +1,7 @@
 package delivery.hooray.discordadapter.bot;
 
+import delivery.hooray.botadapterspringbootstarter.service.EncryptionService;
+import delivery.hooray.sharedlib.Message;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
@@ -16,21 +18,33 @@ import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import net.dv8tion.jda.api.requests.restaction.ChannelAction;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 
+import net.dv8tion.jda.api.utils.FileUpload;
+import org.apache.http.HttpEntity;
+
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 
 public class DiscordBotImpl extends ListenerAdapter {
     private final DiscordBot discordBot;
     private JDA jda;
+    EncryptionService encryptionService;
 
 
     public DiscordBotImpl(DiscordBot discordBot) {
         this.discordBot = discordBot;
         this.jda = null;
+        this.encryptionService = discordBot.getEncryptionService();
     }
 
 
@@ -38,13 +52,73 @@ public class DiscordBotImpl extends ListenerAdapter {
     /**
      * @return
      */
-    public void sendMsgToClient(MessageToDiscordBotEndUserRequestData data) {
+    public void sendMsgToAdmins(MessageToDiscordBotEndUserRequestData data) {
+        Message message;
+
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            message = mapper.readValue(data.getMessage(), Message.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+
         TextChannel channel = jda.getTextChannelById(data.getChatId());
-        if (channel != null) {
-            channel.sendMessage(data.getMessage()).queue();
-        } else {
+        if (channel == null) {
             throw new IllegalArgumentException("Channel with ID " + data.getChatId() + " not found");
         }
+
+        File tempFile = downloadImage(this.encryptionService.decrypt(message.getMediaUrl()));
+
+        if (tempFile != null) {
+            FileUpload fileUpload = FileUpload.fromData(tempFile);
+
+            channel.sendFiles(fileUpload).queue(
+                    success -> {
+                        if (message.getText() != null && !message.getText().isEmpty()) {
+                            channel.sendMessage(message.getText()).queue();
+                        }
+                        tempFile.delete();
+                    },
+                    failure -> {
+                        tempFile.delete();
+                        throw new RuntimeException("Failed to send image: " + failure.getMessage());
+                    }
+            );
+        } else if (message.getText() != null) {
+            channel.sendMessage(message.getText()).queue();
+        }
+    }
+
+    private File downloadImage(String url) {
+        File tempFile = null;
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
+            HttpGet request = new HttpGet(url);
+            try (CloseableHttpResponse response = client.execute(request)) {
+                int statusCode = response.getStatusLine().getStatusCode();
+                if (statusCode == 200) {
+                    HttpEntity entity = response.getEntity();
+                    if (entity != null) {
+                        tempFile = File.createTempFile("image_", ".jpg");
+                        try (InputStream in = entity.getContent(); FileOutputStream out = new FileOutputStream(tempFile)) {
+                            byte[] buffer = new byte[1024];
+                            int length;
+                            while ((length = in.read(buffer)) != -1) {
+                                out.write(buffer, 0, length);
+                            }
+                        }
+                    }
+                } else {
+                    System.err.println("Failed to download image: HTTP error code " + statusCode);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (tempFile != null) {
+                tempFile.delete();  // Clean up if anything goes wrong
+            }
+        }
+        return tempFile;
     }
 
     public String createChannel(String newChannelName) {

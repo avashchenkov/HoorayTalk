@@ -2,10 +2,7 @@ package delivery.hooray.discordadapter.bot;
 
 import delivery.hooray.botadapterspringbootstarter.bot.Bot;
 import delivery.hooray.botadapterspringbootstarter.bot.MessageToBotEndUserRequestData;
-import delivery.hooray.discordadapter.bot.MessageToDiscordBotEndUserRequestData;
 import delivery.hooray.botadapterspringbootstarter.service.BotBehavior;
-import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,7 +25,7 @@ public class DiscordBotBehavior implements BotBehavior {
         DiscordBot discordBot = (DiscordBot) bot;
         MessageToDiscordBotEndUserRequestData discordBotRequest = (MessageToDiscordBotEndUserRequestData) request;
 
-        discordBot.getDiscordBotImpl().sendMsgToClient(discordBotRequest);
+        discordBot.getDiscordBotImpl().sendMsgToAdmins(discordBotRequest);
     }
 
     @Override

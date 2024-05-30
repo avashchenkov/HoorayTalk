@@ -36,4 +36,8 @@ public class DiscordBot extends Bot {
     public String getGuildId() {
         return this.guildId;
     }
+
+    public EncryptionService getEncryptionService() {
+        return this.encryptionService;
+    }
 }
