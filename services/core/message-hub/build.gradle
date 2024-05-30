@@ -122,8 +122,26 @@ tasks.register("openApiGenerateTelegramAdapter", org.openapitools.generator.grad
 	]
 }
 
+tasks.register("openApiGenerateAiAssistant", org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+	generatorName = 'spring'
+	inputSpec = "$projectDir/src/main/resources/client-api/aiassistant-openapi.yaml"
+	outputDir = "$buildDir/generated/aiassistant"
+	apiPackage = 'delivery.hooray.aiassistant.api'
+	modelPackage = 'delivery.hooray.aiassistant.model'
+	configOptions = [
+			interfaceOnly: 'true',
+			useTags: 'true',
+			useBeanValidation: 'true',
+			performBeanValidation: 'true',
+			dateLibrary: 'java8',
+			library: 'spring-boot',
+			useSpringBoot3: 'true'
+	]
+}
+
 tasks.named('compileJava').configure {
-	dependsOn 'openApiGenerateMessageHub', 'openApiGenerateDiscordAdapter', 'openApiGenerateTelegramAdapter'
+	dependsOn 'openApiGenerateMessageHub', 'openApiGenerateDiscordAdapter', 'openApiGenerateTelegramAdapter',
+			  'openApiGenerateAiAssistant'
 }
 
 sourceSets {
