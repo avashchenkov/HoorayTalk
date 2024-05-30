@@ -257,4 +257,13 @@
         </sql>
     </changeSet>
 
+    <changeSet id="15" author="new-dummy-user">
+        <preConditions onFail="MARK_RAN">
+                <tableExists tableName="openai_ai_assistant"/>
+        </preConditions>
+        <sql>
+            DROP TABLE openai_ai_assistant;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

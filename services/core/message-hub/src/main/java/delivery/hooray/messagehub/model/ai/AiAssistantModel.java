@@ -1,4 +1,4 @@
-package delivery.hooray.messagehub.model.common;
+package delivery.hooray.messagehub.model.ai;
 
 import jakarta.persistence.*;
 

@@ -1,5 +1,6 @@
 package delivery.hooray.messagehub.model.common;
 
+import delivery.hooray.messagehub.model.ai.AiAssistantModel;
 import jakarta.persistence.*;
 
 import java.util.UUID;
