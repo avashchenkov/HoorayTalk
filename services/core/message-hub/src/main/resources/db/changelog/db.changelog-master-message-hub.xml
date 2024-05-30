@@ -266,4 +266,20 @@
         </sql>
     </changeSet>
 
+    <changeSet id="16" author="new-dummy-user">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="ai_assistant_instruction" columnName="instruction_text"/>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM information_schema.columns
+                WHERE table_name = 'ai_assistant_instruction'
+                  AND column_name = 'instruction_text'
+                  AND data_type = 'text'
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            ALTER TABLE ai_assistant_instruction
+            ALTER COLUMN instruction_text TYPE TEXT;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
