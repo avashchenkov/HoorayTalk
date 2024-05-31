@@ -94,11 +94,17 @@ public class MessageService {
             chatRepository.save(chatModel);
         }
 
-        MessageModel latestMessage = getMessages(chatModel.getId(), 1).get(0);
+        List<MessageModel> messages = getMessages(chatModel.getId(), 1);
+        if (!messages.isEmpty()) {
+            MessageModel latestMessage = messages.getFirst();
 
-        if (isMessageOlderThanAWeek(latestMessage.getTimestamp())) {
-            chatModel.setAiAssistantInstruction(tenantModel.getAiAssistantStartInstruction());
+            if (isMessageOlderThanAWeek(latestMessage.getTimestamp())) {
+                chatModel.setAiAssistantInstruction(tenantModel.getAiAssistantStartInstruction());
+
+                chatRepository.save(chatModel);
+            }
         }
+
 
         MessageModel messageModel = new MessageModel(chatModel, messageDto.getCustomerChatId(), messageDto.getMessage());
 
