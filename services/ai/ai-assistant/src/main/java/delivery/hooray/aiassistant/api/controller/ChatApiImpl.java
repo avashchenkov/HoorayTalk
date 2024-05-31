@@ -3,9 +3,9 @@ package delivery.hooray.aiassistant.api.controller;
 import delivery.hooray.aiassistant.api.ChatApi;
 import delivery.hooray.aiassistant.model.CompleteChatRequest;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RestController;
 
-@Service
+@RestController
 public class ChatApiImpl implements ChatApi {
 
     @Override

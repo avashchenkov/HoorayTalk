@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 public class CompletionService {
     private final String openAiApiKey;
 
-    public CompletionService(@Value("${openai.api-key}") String openAiApiKey) {
+    public CompletionService(@Value("${OPENAI_API_KEY}") String openAiApiKey) {
         this.openAiApiKey = openAiApiKey;
     }
 }

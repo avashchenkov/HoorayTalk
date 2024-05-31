@@ -18,6 +18,9 @@ java {
 
 repositories {
 	mavenCentral()
+	maven {
+		url = uri("../../../local-repo")
+	}
 }
 
 ext {
@@ -33,6 +36,8 @@ ext {
 	set('hibernateVersion', '6.4.4.Final')
 
 	set('nettyVersion', '4.1.109.Final')
+
+	set('sharedLibVersion', '1.0.0')
 }
 
 dependencies {
@@ -52,6 +57,8 @@ dependencies {
 	implementation 'info.picocli:picocli:4.7.5'
 
 	implementation 'org.postgresql:postgresql'
+
+	implementation "delivery.hooray:shared-lib:${sharedLibVersion}"
 
 	runtimeOnly "io.netty:netty-resolver-dns-native-macos:${nettyVersion}:osx-aarch_64"
 
@@ -147,7 +154,11 @@ tasks.named('compileJava').configure {
 sourceSets {
 	main {
 		java {
-			srcDirs 'src/main/java', "$buildDir/generated/src/main/java", "$buildDir/generated/discordadapter/src/main/java", "$buildDir/generated/telegramadapter/src/main/java"
+			srcDirs 'src/main/java',
+					"$buildDir/generated/src/main/java",
+					"$buildDir/generated/discordadapter/src/main/java",
+					"$buildDir/generated/telegramadapter/src/main/java",
+					"$buildDir/generated/aiassistant/src/main/java"
 		}
 		resources {
 			srcDirs 'src/main/resources'

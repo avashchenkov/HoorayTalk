@@ -54,4 +54,8 @@ public class TenantModel {
     public AdminBotModel getAdminBot() {
         return adminBot;
     }
+
+    public AiAssistantModel getAiAssistant() {
+        return aiAssistant;
+    }
 }

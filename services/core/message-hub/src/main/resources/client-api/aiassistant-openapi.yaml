@@ -60,20 +60,20 @@ components:
       type: object
       required:
         - assistant_id
-        - assistant_instruction
-        - chatHistory
+        - systemMessage
+        - userMessage
       properties:
         assistant_id:
           type: string
           description: Unique identifier of the bot
-        assistant_instruction:
+        systemMessage:
           type: string
-          description: Instruction for the AI to generate the response
-        chatHistory:
+          description:
+            The system message for the AI to generate the response.
+        userMessage:
           type: string
-          description: |
-            A string representing the chat history, including recent messages that provide context for the AI to generate a relevant response.
-            This string should be formatted to include the conversation history necessary for the AI to understand the current state of the chat.
+          description:
+            The user message for the AI to generate the response.
   securitySchemes:
     IntraServiceApiKeyAuth:
       type: apiKey

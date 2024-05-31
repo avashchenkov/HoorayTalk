@@ -40,4 +40,24 @@ public class MessageModel {
 
     @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     private String content;
+
+    public UUID getId() {
+        return id;
+    }
+
+    public ChatModel getChat() {
+        return chat;
+    }
+
+    public Instant getTimestamp() {
+        return timestamp;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public String getContent() {
+        return content;
+    }
 }
