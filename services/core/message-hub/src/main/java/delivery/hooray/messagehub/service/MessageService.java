@@ -87,6 +87,8 @@ public class MessageService {
 
             chatModel = new ChatModel(messageDto.getCustomerChatId(), adminChatId, tenantModel);
 
+            chatModel.setAiAssistantInstruction(tenantModel.getAiAssistantStartInstruction());
+
             chatRepository.save(chatModel);
         }
 
@@ -215,6 +217,7 @@ public class MessageService {
     private String getChatHistory(UUID chatId, int numberOfMessages) {
         List<MessageModel> messages = getMessages(chatId, numberOfMessages);
         return messages.stream()
+                .sorted((m1, m2) -> m2.getTimestamp().compareTo(m1.getTimestamp()))
                 .map(message -> String.format("Timestamp: %s\nContent: %s\n---",
                         message.getTimestamp(), message.getContent()))
                 .collect(Collectors.joining("\n"));
