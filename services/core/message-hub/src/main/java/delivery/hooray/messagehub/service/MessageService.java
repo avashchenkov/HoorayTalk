@@ -24,6 +24,8 @@ import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -90,6 +92,12 @@ public class MessageService {
             chatModel.setAiAssistantInstruction(tenantModel.getAiAssistantStartInstruction());
 
             chatRepository.save(chatModel);
+        }
+
+        MessageModel latestMessage = getMessages(chatModel.getId(), 1).get(0);
+
+        if (isMessageOlderThanAWeek(latestMessage.getTimestamp())) {
+            chatModel.setAiAssistantInstruction(tenantModel.getAiAssistantStartInstruction());
         }
 
         MessageModel messageModel = new MessageModel(chatModel, messageDto.getCustomerChatId(), messageDto.getMessage());
@@ -221,5 +229,10 @@ public class MessageService {
                 .map(message -> String.format("Timestamp: %s\nContent: %s\n---",
                         message.getTimestamp(), message.getContent()))
                 .collect(Collectors.joining("\n"));
+    }
+
+    private boolean isMessageOlderThanAWeek(Instant timestamp) {
+        Instant oneWeekAgo = Instant.now().minus(7, ChronoUnit.DAYS);
+        return timestamp.isBefore(oneWeekAgo);
     }
 }
