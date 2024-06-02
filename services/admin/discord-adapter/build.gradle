@@ -132,11 +132,11 @@ tasks.named('compileJava').configure {
 }
 
 jar {
-	archiveBaseName.set('openapi-spring')
+	archiveBaseName.set('discord-adapter')
 	archiveVersion.set('1.0.0')
 	manifest {
 		attributes(
-				'Implementation-Title': 'openapi-spring',
+				'Implementation-Title': 'Discord Adapter',
 				'Implementation-Version': archiveVersion.get()
 		)
 	}

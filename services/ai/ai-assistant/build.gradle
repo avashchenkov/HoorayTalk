@@ -96,11 +96,11 @@ processResources {
 }
 
 jar {
-	archiveBaseName.set('openapi-spring')
+	archiveBaseName.set('ai-assistant')
 	archiveVersion.set('1.0.0')
 	manifest {
 		attributes(
-				'Implementation-Title': 'openapi-spring',
+				'Implementation-Title': 'AI Assistant',
 				'Implementation-Version': archiveVersion.get()
 		)
 	}

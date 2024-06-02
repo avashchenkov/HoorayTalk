@@ -118,11 +118,11 @@ processResources {
 }
 
 jar {
-	archiveBaseName.set('openapi-spring')
+	archiveBaseName.set('bot-adapter-spring-boot-starter')
 	archiveVersion.set('1.0.0')
 	manifest {
 		attributes(
-				'Implementation-Title': 'openapi-spring',
+				'Implementation-Title': 'Bot Adapter Spring Boot Starter',
 				'Implementation-Version': archiveVersion.get()
 		)
 	}

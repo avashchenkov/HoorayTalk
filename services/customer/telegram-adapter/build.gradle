@@ -128,11 +128,11 @@ tasks.named('compileJava').configure {
 }
 
 jar {
-	archiveBaseName.set('openapi-spring')
+	archiveBaseName.set('telegram-adapter')
 	archiveVersion.set('1.0.0')
 	manifest {
 		attributes(
-				'Implementation-Title': 'openapi-spring',
+				'Implementation-Title': 'Telegram Adapter',
 				'Implementation-Version': archiveVersion.get()
 		)
 	}

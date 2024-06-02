@@ -171,11 +171,11 @@ processResources {
 }
 
 jar {
-	archiveBaseName.set('openapi-spring')
+	archiveBaseName.set('message-hub')
 	archiveVersion.set('1.0.0')
 	manifest {
 		attributes(
-				'Implementation-Title': 'openapi-spring',
+				'Implementation-Title': 'Message Hub',
 				'Implementation-Version': archiveVersion.get()
 		)
 	}
