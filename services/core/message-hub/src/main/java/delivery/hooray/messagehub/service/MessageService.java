@@ -228,15 +228,6 @@ public class MessageService {
         return messageRepository.findByChatIdOrderByTimestampDesc(chatId, PageRequest.of(0, numberOfMessages));
     }
 
-    private String getChatHistory(UUID chatId, int numberOfMessages) {
-        List<MessageModel> messages = getMessages(chatId, numberOfMessages);
-        return messages.stream()
-                .sorted((m1, m2) -> m2.getTimestamp().compareTo(m1.getTimestamp()))
-                .map(message -> String.format("Timestamp: %s\nContent: %s\n---",
-                        message.getTimestamp(), message.getContent()))
-                .collect(Collectors.joining("\n"));
-    }
-
     private boolean isMessageOlderThanAWeek(Instant timestamp) {
         Instant oneWeekAgo = Instant.now().minus(7, ChronoUnit.DAYS);
         return timestamp.isBefore(oneWeekAgo);
