@@ -26,7 +26,7 @@ public class CompletionService {
             URI uri = new URI("https://api.openai.com/v1/chat/completions");
 
             Map<String, Object> requestBody = new HashMap<>();
-            requestBody.put("model", "gpt-3.5-turbo");
+            requestBody.put("model", "gpt-4o");
             requestBody.put("messages", new Object[] {
                     Map.of("role", "system", "content", systemMessage),
                     Map.of("role", "user", "content", userMessage)
