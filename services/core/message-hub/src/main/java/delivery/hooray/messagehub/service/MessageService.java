@@ -28,7 +28,6 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class MessageService {
@@ -98,7 +97,7 @@ public class MessageService {
         if (!messages.isEmpty()) {
             MessageModel latestMessage = messages.getFirst();
 
-            if (isMessageOlderThanAWeek(latestMessage.getTimestamp())) {
+            if (isOlderThanAWeek(latestMessage.getTimestamp())) {
                 chatModel.setAiAssistantInstruction(tenantModel.getAiAssistantStartInstruction());
 
                 chatRepository.save(chatModel);
@@ -228,7 +227,7 @@ public class MessageService {
         return messageRepository.findByChatIdOrderByTimestampDesc(chatId, PageRequest.of(0, numberOfMessages));
     }
 
-    private boolean isMessageOlderThanAWeek(Instant timestamp) {
+    private boolean isOlderThanAWeek(Instant timestamp) {
         Instant oneWeekAgo = Instant.now().minus(7, ChronoUnit.DAYS);
         return timestamp.isBefore(oneWeekAgo);
     }
