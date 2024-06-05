@@ -1,5 +1,6 @@
 package delivery.hooray.messagehub.model.common;
 
+import delivery.hooray.messagehub.enums.MessageRole;
 import jakarta.persistence.*;
 
 import java.time.Instant;
@@ -17,10 +18,10 @@ public class MessageModel {
         this.timestamp = Instant.now();
     }
 
-    public MessageModel(ChatModel chat, String author, String content) {
+    public MessageModel(ChatModel chat, MessageRole messageRole, String content) {
         this();
         this.chat = chat;
-        this.author = author;
+        this.author = messageRole.name();
         this.content = content;
     }
 
@@ -53,8 +54,8 @@ public class MessageModel {
         return timestamp;
     }
 
-    public String getAuthor() {
-        return author;
+    public MessageRole getAuthor() {
+        return MessageRole.valueOf(this.author);
     }
 
     public String getContent() {

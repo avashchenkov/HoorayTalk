@@ -3,6 +3,8 @@ package delivery.hooray.messagehub.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import delivery.hooray.aiassistant.model.CompleteChatRequestRecentMessagesInner;
+import delivery.hooray.messagehub.enums.MessageRole;
 import delivery.hooray.messagehub.service.ai.AiAssistantResponse;
 import delivery.hooray.sharedlib.Message;
 import delivery.hooray.aiassistant.model.CompleteChatRequest;
@@ -26,6 +28,7 @@ import org.webjars.NotFoundException;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,13 +37,14 @@ public class MessageService {
 
     private final ChatRepository chatRepository;
     private final MessageRepository messageRepository;
-    private final DiscordSenderService discordSenderService;  // TODO:
+    private final DiscordSenderService discordSenderService;
     private final TelegramSenderService telegramSenderService;
     private final TenantRepository tenantRepository;
     private final AiAssistantSenderService aiAssistantSenderService;
+    private final Integer aiAssistantContextWindowSize = 50;  // TODO: parametrise it later for every tenant
 
     @Autowired
-    public MessageService(ChatRepository chatRepository,    // TODO: too many arguments
+    public MessageService(ChatRepository chatRepository,
                           MessageRepository messageRepository,
                           DiscordSenderService discordSenderService,
                           TelegramSenderService telegramSenderService,
@@ -105,7 +109,7 @@ public class MessageService {
         }
 
 
-        MessageModel messageModel = new MessageModel(chatModel, messageDto.getCustomerChatId(), messageDto.getMessage());
+        MessageModel messageModel = new MessageModel(chatModel, MessageRole.CUSTOMER, messageDto.getMessage());
 
         messageRepository.save(messageModel);
 
@@ -114,9 +118,9 @@ public class MessageService {
 
             completeChatRequest.setAssistantId(chatModel.getTenant().getAiAssistant().getId().toString());
 
-            String userPrompt = getChatHistory(chatModel.getId(), 50);
+            List<CompleteChatRequestRecentMessagesInner> recentMessages = getRecentMessages(chatModel.getId(), aiAssistantContextWindowSize);
 
-            completeChatRequest.setUserMessage(userPrompt);
+            completeChatRequest.setRecentMessages(recentMessages);
 
             String systemPrompt = chatModel.getAiAssistantInstruction().getText();
 
@@ -138,7 +142,7 @@ public class MessageService {
                 chatRepository.save(chatModel);
             }
 
-            MessageModel aiAssistantMessage = new MessageModel(chatModel, "AI", aiAssistantResponse);
+            MessageModel aiAssistantMessage = new MessageModel(chatModel, MessageRole.AI, aiAssistantResponse);
 
             messageRepository.save(aiAssistantMessage);
 
@@ -184,7 +188,7 @@ public class MessageService {
             return;
         }
 
-        MessageModel messageModel = new MessageModel(chatModel, messageDto.getAdminChatId(), messageDto.getMessage());
+        MessageModel messageModel = new MessageModel(chatModel, MessageRole.ADMIN, messageDto.getMessage());
 
         messageRepository.save(messageModel);
 
@@ -230,5 +234,19 @@ public class MessageService {
     private boolean isOlderThanAWeek(Instant timestamp) {
         Instant oneWeekAgo = Instant.now().minus(7, ChronoUnit.DAYS);
         return timestamp.isBefore(oneWeekAgo);
+    }
+
+    private List<CompleteChatRequestRecentMessagesInner> getRecentMessages(UUID chatId, int numberOfMessages) {
+        List<MessageModel> messages = getMessages(chatId, numberOfMessages);
+        List<CompleteChatRequestRecentMessagesInner> chatHistory = new ArrayList<>();
+
+        for (MessageModel message : messages) {
+            CompleteChatRequestRecentMessagesInner chatItem = new CompleteChatRequestRecentMessagesInner();
+            chatItem.setRole(message.getAuthor().name());
+            chatItem.setContent(message.getContent());
+            chatHistory.add(chatItem);
+        }
+
+        return chatHistory;
     }
 }
