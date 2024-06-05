@@ -59,17 +59,17 @@ components:
     CompleteChatRequest:
       type: object
       required:
-        - assistant_id
+        - assistantId
         - systemMessage
-        - chat
+        - recentMessages
       properties:
-        assistant_id:
+        assistantId:
           type: string
           description: Unique identifier of the bot
         systemMessage:
           type: string
           description: The system message for the AI to generate the response.
-        chat:
+        recentMessages:
           type: array
           items:
             type: object
