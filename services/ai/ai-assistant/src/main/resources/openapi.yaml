@@ -61,19 +61,26 @@ components:
       required:
         - assistant_id
         - systemMessage
-        - userMessage
+        - chat
       properties:
         assistant_id:
           type: string
           description: Unique identifier of the bot
         systemMessage:
           type: string
-          description:
-            The system message for the AI to generate the response.
-        userMessage:
-            type: string
-            description:
-                The user message for the AI to generate the response.
+          description: The system message for the AI to generate the response.
+        chat:
+          type: array
+          items:
+            type: object
+            properties:
+              role:
+                type: string
+                description: The role of the message sender (e.g., "user" or "assistant")
+              content:
+                type: string
+                description: The content of the message
+          description: An array of messages in the chat
   securitySchemes:
     IntraServiceApiKeyAuth:
       type: apiKey
