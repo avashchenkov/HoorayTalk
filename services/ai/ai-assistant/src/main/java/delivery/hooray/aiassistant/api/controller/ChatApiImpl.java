@@ -22,7 +22,8 @@ public class ChatApiImpl implements ChatApi {
             return ResponseEntity.badRequest().build();
         }
 
-        String response = completionService.complete(completeChatRequest.getSystemMessage(), completeChatRequest.getUserMessage());
+        String response = completionService.complete(completeChatRequest.getSystemMessage(),
+                                                     completeChatRequest.getRecentMessages());
 
         try {
             return ResponseEntity.ok(response);

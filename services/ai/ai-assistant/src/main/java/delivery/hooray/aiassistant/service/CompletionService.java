@@ -2,35 +2,53 @@ package delivery.hooray.aiassistant.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import delivery.hooray.aiassistant.enums.MessageRole;
+import delivery.hooray.aiassistant.model.CompleteChatRequestRecentMessagesInner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import static delivery.hooray.aiassistant.enums.MessageRole.SYSTEM;
 
 @Service
 public class CompletionService {
     private final String openAiApiKey;
+    private final MessageRoleService messageRoleService;
 
-    public CompletionService(@Value("${OPENAI_API_KEY}") String openAiApiKey) {
+    @Autowired
+    public CompletionService(@Value("${OPENAI_API_KEY}") String openAiApiKey,
+                             MessageRoleService messageRoleService) {
         this.openAiApiKey = openAiApiKey;
+        this.messageRoleService = messageRoleService;
     }
 
-    public String complete(String systemMessage, String userMessage) {
+    public String complete(String systemMessage, List<CompleteChatRequestRecentMessagesInner> recentMessages) {
         try {
             HttpClient client = HttpClient.newHttpClient();
 
             URI uri = new URI("https://api.openai.com/v1/chat/completions");
 
+            List<Map<String, String>> messages = new ArrayList<>();
+            messages.add(Map.of("role", messageRoleService.toOpenAiFormat(SYSTEM), "content", systemMessage));
+
+            for (CompleteChatRequestRecentMessagesInner message : recentMessages) {
+                MessageRole messageRole = messageRoleService.fromMessageHubFormat(message.getRole());
+
+                messages.add(Map.of("role", messageRoleService.toOpenAiFormat(messageRole), "content", message.getContent()));
+            }
+
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("model", "gpt-3.5-turbo");
-            requestBody.put("messages", new Object[] {
-                    Map.of("role", "system", "content", systemMessage),
-                    Map.of("role", "user", "content", userMessage)
-            });
+            requestBody.put("messages", messages);
 
             ObjectMapper objectMapper = new ObjectMapper();
             String requestBodyString = objectMapper.writeValueAsString(requestBody);
@@ -49,7 +67,14 @@ public class CompletionService {
             }
 
             JsonNode responseBody = objectMapper.readTree(response.body());
-            return responseBody.get("choices").get(0).get("message").get("content").asText();
+            JsonNode choices = responseBody.get("choices");
+            if (choices != null && choices.size() > 0) {
+                JsonNode messageNode = choices.get(0).get("message");
+                if (messageNode != null) {
+                    return messageNode.get("content").asText();
+                }
+            }
+            throw new RuntimeException("Invalid response structure from OpenAI: " + response.body());
         } catch (Exception e) {
             throw new RuntimeException("Error during completion request", e);
         }
