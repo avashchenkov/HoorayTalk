@@ -228,7 +228,7 @@ public class MessageService {
     }
 
     private List<MessageModel> getMessages(UUID chatId, int numberOfMessages) {
-        return messageRepository.findByChatIdOrderByTimestampDesc(chatId, PageRequest.of(0, numberOfMessages));
+        return messageRepository.findByChatIdOrderByTimestampAsc(chatId, PageRequest.of(0, numberOfMessages));
     }
 
     private boolean isOlderThanAWeek(Instant timestamp) {
