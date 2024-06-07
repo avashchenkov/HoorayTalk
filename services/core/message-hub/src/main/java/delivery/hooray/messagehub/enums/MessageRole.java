@@ -1,5 +1,5 @@
 package delivery.hooray.messagehub.enums;
 
 public enum MessageRole {
-    CUSTOMER, ADMIN, AI;
+    CUSTOMER, ADMIN, AI, SYSTEM
 }

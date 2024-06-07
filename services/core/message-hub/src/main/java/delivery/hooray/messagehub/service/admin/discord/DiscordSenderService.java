@@ -1,7 +1,7 @@
 package delivery.hooray.messagehub.service.admin.discord;
 
-import delivery.hooray.discordadapter.model.SendMessageRequest;
-import delivery.hooray.discordadapter.model.SendMessageResponse;
+import delivery.hooray.adminadapter.model.SendMessageRequest;
+import delivery.hooray.adminadapter.model.SendMessageResponse;
 import delivery.hooray.messagehub.config.WebClientConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,7 +1,7 @@
 package delivery.hooray.messagehub.service.customer.telegram;
 
 import delivery.hooray.messagehub.config.WebClientConfig;
-import delivery.hooray.telegramadapter.model.SendMessageRequest;
+import delivery.hooray.customeradapter.model.SendMessageRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

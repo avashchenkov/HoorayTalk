@@ -95,12 +95,12 @@ tasks.register("openApiGenerateMessageHub", org.openapitools.generator.gradle.pl
 	]
 }
 
-tasks.register("openApiGenerateDiscordAdapter", org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+tasks.register("openApiGenerateAdminAdapter", org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
 	generatorName = 'spring'
-	inputSpec = "$projectDir/src/main/resources/client-api/discordadapter-openapi.yaml"
-	outputDir = "$buildDir/generated/discordadapter"
-	apiPackage = 'delivery.hooray.discordadapter.api'
-	modelPackage = 'delivery.hooray.discordadapter.model'
+	inputSpec = "$projectDir/src/main/resources/client-api/adminadapter-openapi.yaml"
+	outputDir = "$buildDir/generated/adminadapter"
+	apiPackage = 'delivery.hooray.adminadapter.api'
+	modelPackage = 'delivery.hooray.adminadapter.model'
 	configOptions = [
 			interfaceOnly: 'true',
 			useTags: 'true',
@@ -112,12 +112,12 @@ tasks.register("openApiGenerateDiscordAdapter", org.openapitools.generator.gradl
 	]
 }
 
-tasks.register("openApiGenerateTelegramAdapter", org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+tasks.register("openApiGenerateCustomerAdapter", org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
 	generatorName = 'spring'
-	inputSpec = "$projectDir/src/main/resources/client-api/telegramadapter-openapi.yaml"
-	outputDir = "$buildDir/generated/telegramadapter"
-	apiPackage = 'delivery.hooray.telegramadapter.api'
-	modelPackage = 'delivery.hooray.telegramadapter.model'
+	inputSpec = "$projectDir/src/main/resources/client-api/customeradapter-openapi.yaml"
+	outputDir = "$buildDir/generated/customeradapter"
+	apiPackage = 'delivery.hooray.customeradapter.api'
+	modelPackage = 'delivery.hooray.customeradapter.model'
 	configOptions = [
 			interfaceOnly: 'true',
 			useTags: 'true',
@@ -147,7 +147,7 @@ tasks.register("openApiGenerateAiAssistant", org.openapitools.generator.gradle.p
 }
 
 tasks.named('compileJava').configure {
-	dependsOn 'openApiGenerateMessageHub', 'openApiGenerateDiscordAdapter', 'openApiGenerateTelegramAdapter',
+	dependsOn 'openApiGenerateMessageHub', 'openApiGenerateAdminAdapter', 'openApiGenerateCustomerAdapter',
 			  'openApiGenerateAiAssistant'
 }
 
@@ -156,8 +156,8 @@ sourceSets {
 		java {
 			srcDirs 'src/main/java',
 					"$buildDir/generated/src/main/java",
-					"$buildDir/generated/discordadapter/src/main/java",
-					"$buildDir/generated/telegramadapter/src/main/java",
+					"$buildDir/generated/adminadapter/src/main/java",
+					"$buildDir/generated/customeradapter/src/main/java",
 					"$buildDir/generated/aiassistant/src/main/java"
 		}
 		resources {

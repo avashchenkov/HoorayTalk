@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import static delivery.hooray.aiassistant.enums.MessageRole.*;
 
 @Service
-public class MessageRoleService {
+public class MessageRoleMapService {
     public MessageRole fromOpenAiFormat(String openAiRole) {
         if (openAiRole.equals("system")) {
             return SYSTEM;
@@ -24,6 +24,8 @@ public class MessageRoleService {
             return USER;
         } else if (messageHubRole.equals("AI") || messageHubRole.equals("ADMIN")) {
             return ASSISTANT;
+        } else if (messageHubRole.equals("SYSTEM")) {
+            return SYSTEM;
         } else {
             throw new IllegalArgumentException("Unknown message role: " + messageHubRole);
         }

@@ -22,13 +22,13 @@ import static delivery.hooray.aiassistant.enums.MessageRole.SYSTEM;
 @Service
 public class CompletionService {
     private final String openAiApiKey;
-    private final MessageRoleService messageRoleService;
+    private final MessageRoleMapService messageRoleMapService;
 
     @Autowired
     public CompletionService(@Value("${OPENAI_API_KEY}") String openAiApiKey,
-                             MessageRoleService messageRoleService) {
+                             MessageRoleMapService messageRoleMapService) {
         this.openAiApiKey = openAiApiKey;
-        this.messageRoleService = messageRoleService;
+        this.messageRoleMapService = messageRoleMapService;
     }
 
     public String complete(String systemMessage, List<CompleteChatRequestRecentMessagesInner> recentMessages) {
@@ -38,12 +38,12 @@ public class CompletionService {
             URI uri = new URI("https://api.openai.com/v1/chat/completions");
 
             List<Map<String, String>> messages = new ArrayList<>();
-            messages.add(Map.of("role", messageRoleService.toOpenAiFormat(SYSTEM), "content", systemMessage));
+            messages.add(Map.of("role", messageRoleMapService.toOpenAiFormat(SYSTEM), "content", systemMessage));
 
             for (CompleteChatRequestRecentMessagesInner message : recentMessages) {
-                MessageRole messageRole = messageRoleService.fromMessageHubFormat(message.getRole());
+                MessageRole messageRole = messageRoleMapService.fromMessageHubFormat(message.getRole());
 
-                messages.add(Map.of("role", messageRoleService.toOpenAiFormat(messageRole), "content", message.getContent()));
+                messages.add(Map.of("role", messageRoleMapService.toOpenAiFormat(messageRole), "content", message.getContent()));
             }
 
             Map<String, Object> requestBody = new HashMap<>();
