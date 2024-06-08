@@ -37,6 +37,16 @@ public class CustomerAdapterMessageService implements CustomerAdapterMessageServ
         }
     }
 
+    public void handleCustomerCommand(MessageFromCustomerAdapterDto messageDto) {
+        CustomerAdapterType adapterType = determineAdapterType(messageDto.getBotId());
+
+        if (adapterType == TELEGRAM) {
+            telegramAdapterMessageService.handleCustomerCommand(messageDto);
+        } else {
+            throw new IllegalArgumentException("Unknown adapter type");
+        }
+    }
+
     private CustomerAdapterType determineAdapterType(UUID id) {
         CustomerBotModel customerBotModel = customerBotRepository.findById(id).orElse(null);
 

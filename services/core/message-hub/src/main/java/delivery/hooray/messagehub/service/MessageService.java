@@ -39,7 +39,7 @@ public class MessageService {
     private final TenantRepository tenantRepository;
     private final AiAssistantMessageService aiAssistantMessageService;
     private final AdminAdapterMessageService adminAdapterMessageService;
-    private final CustomerAdapterMessageService customerAdapterService;
+    private final CustomerAdapterMessageService customerAdapterMessageService;
 
     @Autowired
     public MessageService(ChatRepository chatRepository,
@@ -53,7 +53,7 @@ public class MessageService {
         this.tenantRepository = tenantRepository;
         this.aiAssistantMessageService = aiAssistantMessageService;
         this.adminAdapterMessageService = adminAdapterMessageService;
-        this.customerAdapterService = customerAdapterMessageService;
+        this.customerAdapterMessageService = customerAdapterMessageService;
     }
 
     public void handleCustomerMessage(MessageFromCustomerAdapterDto messageDto) {
@@ -76,13 +76,17 @@ public class MessageService {
         SendMessageResponse sendMessageResponse = this.adminAdapterMessageService.sendMessageToAdmin(sendMessageRequest);
 
         chatModel = this.createChatModelIfNotExists(sendMessageResponse.getAdminChatId(), messageDto.getCustomerChatId(), tenantModel, chatModel);
-        this.activateAiAssistantIfNecessary(chatModel, tenantModel);
+        this.activateAiAssistantIfNecessary(chatModel, tenantModel);  // TODO: add the reactivation timestamp to the chat model
 
         MessageModel messageModel = new MessageModel(chatModel, MessageRole.CUSTOMER, messageDto.getMessage());
 
         messageRepository.save(messageModel);
 
-        if(chatModel.getAiAssistantInstruction() != null) {
+        this.customerAdapterMessageService.handleCustomerCommand(messageDto);
+
+        chatModel = chatRepository.findById(chatModel.getId()).orElse(null);
+
+        if(chatModel != null && chatModel.getAiAssistantInstruction() != null) {
             this.aiAssistantMessageService.handleCustomerMessage(chatModel, getRecentMessages(chatModel.getId(), this.aiAssistantContextWindowSize));
         }
     }
@@ -109,7 +113,7 @@ public class MessageService {
                         chatModel.getCustomerChatId(),
                         messageDto.getMessage());
 
-        customerAdapterService.sendMessageToCustomer(message);
+        customerAdapterMessageService.sendMessageToCustomer(message);
     }
 
     protected Optional<ChatModel> getChatModel(MessageFromCustomerAdapterDto messageFromCustomerAdapterDto) {
