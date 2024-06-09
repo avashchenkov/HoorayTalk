@@ -18,8 +18,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import static delivery.hooray.messagehub.enums.TelegramCommand.NEWORDER;
+import static delivery.hooray.messagehub.enums.TelegramCommand.START;
 
 @Service
 public class AiAssistantMessageService {
@@ -48,7 +53,9 @@ public class AiAssistantMessageService {
 
         completeChatRequest.setAssistantId(chatModel.getTenant().getAiAssistant().getId().toString());
 
-        completeChatRequest.setRecentMessages(recentMessages);
+        List<CompleteChatRequestRecentMessagesInner> currentOrderMessages = filterCurrentOrderMessages(recentMessages);
+
+        completeChatRequest.setRecentMessages(currentOrderMessages);
 
         String systemPrompt = chatModel.getAiAssistantInstruction().getText();
 
@@ -144,5 +151,33 @@ public class AiAssistantMessageService {
         systemWrongFormatCorrectingMessage.setContent("Attention! Your last message was not in the correct format. You have to answer according to the JSON pattern: {\"message\":\"The text that will be shown to the customer.\", \"isAdminActionRequired\": false or true");
 
         recentMessages.add(systemWrongFormatCorrectingMessage);
+    }
+
+    private List<CompleteChatRequestRecentMessagesInner> filterCurrentOrderMessages(List<CompleteChatRequestRecentMessagesInner> allMessages) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<CompleteChatRequestRecentMessagesInner> lastOrderMessages = new ArrayList<>();
+
+        for (int i = allMessages.size() - 1; i >= 0; i--) {
+            CompleteChatRequestRecentMessagesInner message = allMessages.get(i);
+            if (message.getRole().equals(MessageRole.CUSTOMER.name())) {
+                try {
+                    String text = objectMapper.readValue(message.getContent(), Message.class).getText();
+
+                    lastOrderMessages.add(message);
+
+                    if (START.getCommand().equals(text) || NEWORDER.getCommand().equals(text)) {
+                        break;
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                lastOrderMessages.add(message);
+            }
+        }
+
+        Collections.reverse(lastOrderMessages);
+
+        return lastOrderMessages;
     }
 }
