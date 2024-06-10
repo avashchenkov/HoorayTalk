@@ -19,6 +19,7 @@ import delivery.hooray.messagehub.service.admin.MessageFromAdminAdapterDto;
 import delivery.hooray.messagehub.service.customer.MessageFromCustomerAdapterDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
@@ -183,7 +184,11 @@ public class MessageService {
     }
 
     private List<MessageModel> getMessages(UUID chatId, int numberOfMessages) {
-        return messageRepository.findByChatIdOrderByTimestampAsc(chatId, PageRequest.of(0, numberOfMessages));
+        List<MessageModel> messages = messageRepository.findByChatIdOrderByTimestampDesc(chatId, PageRequest.of(0, numberOfMessages));
+
+        List<MessageModel> reversedMessages = messages.reversed();
+
+        return reversedMessages;
     }
 
     private List<CompleteChatRequestRecentMessagesInner> getRecentMessages(UUID chatId, int numberOfMessages) {
