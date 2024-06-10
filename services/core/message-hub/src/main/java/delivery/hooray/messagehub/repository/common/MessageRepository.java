@@ -10,5 +10,5 @@ import java.util.UUID;
 
 @Repository
 public interface MessageRepository extends JpaRepository<MessageModel, UUID> {
-    List<MessageModel> findByChatIdOrderByTimestampAsc(UUID chatId, Pageable pageable);
+    List<MessageModel> findByChatIdOrderByTimestampDesc(UUID chatId, Pageable pageable);
 }
