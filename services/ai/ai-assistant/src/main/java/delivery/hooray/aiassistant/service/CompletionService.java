@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static delivery.hooray.aiassistant.enums.MessageRole.SYSTEM;
+import static delivery.hooray.aiassistant.enums.MessageRole.*;
 
 @Service
 public class CompletionService {
@@ -44,19 +44,26 @@ public class CompletionService {
 
             for (CompleteChatRequestRecentMessagesInner message : recentMessages) {
                 MessageRole messageRole = messageRoleMapService.fromMessageHubFormat(message.getRole());
+                String content;
 
-                ObjectMapper objectMapper = new ObjectMapper();
-                Message messageContent;
+                if (messageRole == USER) {
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    Message messageContent;
 
-                try {
-                    messageContent = objectMapper.readValue(message.getContent(), Message.class);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    try {
+                        messageContent = objectMapper.readValue(message.getContent(), Message.class);
 
-                    throw new RuntimeException("Failed to parse message content", e);
+                        content = messageContent.getText();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+
+                        throw new RuntimeException("Failed to parse message content", e);
+                    }
+                } else {
+                    content = message.getContent();
                 }
 
-                messages.add(Map.of("role", messageRoleMapService.toOpenAiFormat(messageRole), "content", messageContent.getText()));
+                messages.add(Map.of("role", messageRoleMapService.toOpenAiFormat(messageRole), "content", content));
             }
 
             Map<String, Object> requestBody = new HashMap<>();
