@@ -47,7 +47,7 @@ public class CompletionService {
             }
 
             Map<String, Object> requestBody = new HashMap<>();
-            requestBody.put("model", "gpt-3.5-turbo");
+            requestBody.put("model", "gpt-4-turbo");
             requestBody.put("messages", messages);
 
             ObjectMapper objectMapper = new ObjectMapper();
