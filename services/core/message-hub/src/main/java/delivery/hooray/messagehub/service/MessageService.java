@@ -19,7 +19,6 @@ import delivery.hooray.messagehub.service.admin.MessageFromAdminAdapterDto;
 import delivery.hooray.messagehub.service.customer.MessageFromCustomerAdapterDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
@@ -115,6 +114,15 @@ public class MessageService {
                         messageDto.getMessage());
 
         customerAdapterMessageService.sendMessageToCustomer(message);
+        disableAiAssistantIfNecessary(chatModel);
+    }
+
+    private void disableAiAssistantIfNecessary(ChatModel chatModel) {
+        if (chatModel.getAiAssistantInstruction() != null) {
+            chatModel.setAiAssistantInstruction(null);
+
+            chatRepository.save(chatModel);
+        }
     }
 
     protected Optional<ChatModel> getChatModel(MessageFromCustomerAdapterDto messageFromCustomerAdapterDto) {
