@@ -68,7 +68,6 @@ public class AiAssistantMessageService {
             return response;
         });
 
-
         if (aiAssistantResponse.isAdminActionRequired()) {
             chatModel.setAiAssistantInstruction(null);
             chatRepository.save(chatModel);
