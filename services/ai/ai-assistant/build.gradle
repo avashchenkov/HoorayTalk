@@ -16,6 +16,9 @@ java {
 
 repositories {
 	mavenCentral()
+	maven {
+		url = uri("../../../local-repo")
+	}
 }
 
 ext {
@@ -27,6 +30,8 @@ ext {
 	set('jacksonDatabindNullableVersion', '0.2.6')
 
 	set('nettyVersion', '4.1.109.Final')
+
+	set('sharedLibVersion', '1.0.0')
 }
 
 dependencies {
@@ -40,6 +45,8 @@ dependencies {
 	implementation "org.openapitools:jackson-databind-nullable:${jacksonDatabindNullableVersion}"
 
 	implementation 'info.picocli:picocli:4.7.5'
+
+	implementation "delivery.hooray:shared-lib:${sharedLibVersion}"
 
 	runtimeOnly "io.netty:netty-resolver-dns-native-macos:${nettyVersion}:osx-aarch_64"
 
