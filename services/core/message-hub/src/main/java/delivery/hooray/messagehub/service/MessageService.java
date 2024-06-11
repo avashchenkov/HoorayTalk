@@ -19,7 +19,6 @@ import delivery.hooray.messagehub.service.admin.MessageFromAdminAdapterDto;
 import delivery.hooray.messagehub.service.customer.MessageFromCustomerAdapterDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
