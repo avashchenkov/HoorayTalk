@@ -114,6 +114,15 @@ public class MessageService {
                         messageDto.getMessage());
 
         customerAdapterMessageService.sendMessageToCustomer(message);
+        disableAiAssistantIfNecessary(chatModel);
+    }
+
+    private void disableAiAssistantIfNecessary(ChatModel chatModel) {
+        if (chatModel.getAiAssistantInstruction() != null) {
+            chatModel.setAiAssistantInstruction(null);
+
+            chatRepository.save(chatModel);
+        }
     }
 
     protected Optional<ChatModel> getChatModel(MessageFromCustomerAdapterDto messageFromCustomerAdapterDto) {
