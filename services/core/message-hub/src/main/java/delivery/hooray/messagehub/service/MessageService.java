@@ -22,8 +22,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +35,7 @@ import java.util.UUID;
 public class MessageService {
     private final Integer aiAssistantContextWindowSize = 50;  // TODO: parametrise it later for every tenant
     private final LocalDateTime aiAssistantReactivationTime = LocalDateTime.now().minusDays(7);  // TODO: parametrise it later for every tenant
+    private final Integer aiAssistantResponsesLimit = 20;  // TODO: parametrise it later for every tenant
 
     private final ChatRepository chatRepository;
     private final MessageRepository messageRepository;
@@ -63,20 +66,15 @@ public class MessageService {
             return;  // TODO: The system is set up incorrectly, we should log this and notify the admin
         }
 
-        ChatModel chatModel = getChatModel(messageDto).orElseGet(() -> {
-            return null;
-        });
+        ChatModel chatModel = getChatModel(messageDto).orElseGet(() -> null);
 
-        String adminChatId = getAdminChatId(chatModel).orElseGet(() -> {
-            return null;
-        });
+        String adminChatId = getAdminChatId(chatModel).orElseGet(() -> null);
 
         SendMessageRequest sendMessageRequest = buildSendMessageRequest(messageDto, tenantModel.getAdminBot(), adminChatId);
 
         SendMessageResponse sendMessageResponse = this.adminAdapterMessageService.sendMessageToAdmin(sendMessageRequest);
 
         chatModel = this.createChatModelIfNotExists(sendMessageResponse.getAdminChatId(), messageDto.getCustomerChatId(), tenantModel, chatModel);
-        this.activateAiAssistantIfNecessary(chatModel, tenantModel);  // TODO: add the reactivation timestamp to the chat model
 
         MessageModel messageModel = new MessageModel(chatModel, MessageRole.CUSTOMER, messageDto.getMessage());
 
@@ -84,9 +82,7 @@ public class MessageService {
 
         this.customerAdapterMessageService.handleCustomerCommand(messageDto);
 
-        chatModel = chatRepository.findById(chatModel.getId()).orElse(null);
-
-        if(chatModel != null && chatModel.getAiAssistantInstruction() != null) {
+        if (isAiAssistantResponseRequired(chatModel)) {
             this.aiAssistantMessageService.handleCustomerMessage(chatModel, getRecentMessages(chatModel.getId(), this.aiAssistantContextWindowSize));
         }
     }
@@ -123,6 +119,34 @@ public class MessageService {
 
             chatRepository.save(chatModel);
         }
+    }
+
+    private boolean isAiAssistantResponseRequired(ChatModel chatModel) {
+        if (chatModel.getAiAssistantInstruction() != null) {
+            return !isAiAssistantResponsesLimitExceeded(chatModel);
+        } else {
+            List<MessageModel> messages = getMessages(chatModel.getId(), 1);
+            MessageModel latestMessage = messages.getFirst();
+
+            if (latestMessage.getTimestamp().isBefore(aiAssistantReactivationTime.atZone(ZoneId.systemDefault()).toInstant())) {
+                chatModel.setAiAssistantInstruction(chatModel.getTenant().getAiAssistantStartInstruction());
+                chatRepository.save(chatModel);
+
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    private boolean isAiAssistantResponsesLimitExceeded(ChatModel chatModel) {
+        List<MessageModel> messagesLast24Hours = messageRepository.findByChatIdAndTimestampAfter(chatModel.getId(), Instant.now().minus(1, ChronoUnit.DAYS));
+
+        long aiAssistantResponsesCount = messagesLast24Hours.stream()
+                .filter(message -> message.getAuthor() == MessageRole.AI)
+                .count();
+
+        return aiAssistantResponsesCount >= aiAssistantResponsesLimit;
     }
 
     protected Optional<ChatModel> getChatModel(MessageFromCustomerAdapterDto messageFromCustomerAdapterDto) {
@@ -165,20 +189,6 @@ public class MessageService {
         }
 
         return chatModel;
-    }
-
-    private void activateAiAssistantIfNecessary(ChatModel chatModel, TenantModel tenantModel) {
-        List<MessageModel> messages = getMessages(chatModel.getId(), 1);
-
-        if (!messages.isEmpty()) {
-            MessageModel latestMessage = messages.getFirst();
-
-            if (latestMessage.getTimestamp().isBefore(aiAssistantReactivationTime.atZone(ZoneId.systemDefault()).toInstant())) {
-                chatModel.setAiAssistantInstruction(tenantModel.getAiAssistantStartInstruction());
-
-                chatRepository.save(chatModel);
-            }
-        }
     }
 
     protected ChatModel getChatModel(MessageFromAdminAdapterDto messageFromAdminAdapterDto) {
