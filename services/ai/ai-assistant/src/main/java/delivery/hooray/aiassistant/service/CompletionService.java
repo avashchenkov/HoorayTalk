@@ -7,7 +7,9 @@ import delivery.hooray.aiassistant.model.CompleteChatRequestRecentMessagesInner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import delivery.hooray.sharedlib.Message;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -43,7 +45,18 @@ public class CompletionService {
             for (CompleteChatRequestRecentMessagesInner message : recentMessages) {
                 MessageRole messageRole = messageRoleMapService.fromMessageHubFormat(message.getRole());
 
-                messages.add(Map.of("role", messageRoleMapService.toOpenAiFormat(messageRole), "content", message.getContent()));
+                ObjectMapper objectMapper = new ObjectMapper();
+                Message messageContent;
+
+                try {
+                    messageContent = objectMapper.readValue(message.getContent(), Message.class);
+                } catch (IOException e) {
+                    e.printStackTrace();
+
+                    throw new RuntimeException("Failed to parse message content", e);
+                }
+
+                messages.add(Map.of("role", messageRoleMapService.toOpenAiFormat(messageRole), "content", messageContent.getText()));
             }
 
             Map<String, Object> requestBody = new HashMap<>();
