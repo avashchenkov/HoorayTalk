@@ -61,7 +61,7 @@ public class AiAssistantMessageService {
 
         completeChatRequest.setSystemMessage(systemPrompt);
 
-        AiAssistantResponse aiAssistantResponse = CompleteChat(completeChatRequest).orElseGet(() -> {
+        AiAssistantResponse aiAssistantResponse = completeChat(completeChatRequest).orElseGet(() -> {
             AiAssistantResponse response = new AiAssistantResponse();
             response.setMessage("Sorry, AI Assistant is not available at the moment. Our Administrator will get back to you soon.");
             response.setAdminActionRequired(true);
@@ -113,7 +113,7 @@ public class AiAssistantMessageService {
         adminAdapterMessageService.sendMessageToAdmin(messageToAdmins);
     }
 
-    private Optional<AiAssistantResponse> CompleteChat(CompleteChatRequest completeChatRequest) {
+    private Optional<AiAssistantResponse> completeChat(CompleteChatRequest completeChatRequest) {
         int trials = 0;
         String aiAssistantResponse = "";
         ObjectMapper objectMapper = new ObjectMapper();
