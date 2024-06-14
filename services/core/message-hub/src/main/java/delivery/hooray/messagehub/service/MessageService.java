@@ -30,12 +30,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Service
 public class MessageService {
     private final Integer aiAssistantContextWindowSize = 50;  // TODO: parametrise it later for every tenant
     private final LocalDateTime aiAssistantReactivationTime = LocalDateTime.now().minusDays(7);  // TODO: parametrise it later for every tenant
     private final Integer aiAssistantResponsesLimit = 20;  // TODO: parametrise it later for every tenant
+    private final ConcurrentHashMap<String, Lock> customerChatIdLocks;
 
     private final ChatRepository chatRepository;
     private final MessageRepository messageRepository;
@@ -57,6 +61,7 @@ public class MessageService {
         this.aiAssistantMessageService = aiAssistantMessageService;
         this.adminAdapterMessageService = adminAdapterMessageService;
         this.customerAdapterMessageService = customerAdapterMessageService;
+        this.customerChatIdLocks = new ConcurrentHashMap<>();
     }
 
     public void handleCustomerMessage(MessageFromCustomerAdapterDto messageDto) {
@@ -66,15 +71,33 @@ public class MessageService {
             return;  // TODO: The system is set up incorrectly, we should log this and notify the admin
         }
 
-        ChatModel chatModel = getChatModel(messageDto).orElseGet(() -> null);
+        ChatModel chatModel;
 
-        String adminChatId = getAdminChatId(chatModel).orElseGet(() -> null);
+        /*
+         The lock blocks other messages from the same new customer to create a new chat until the first message
+         is processed and the chat model is created. It is necessary to prevent the creation of multiple chats
+         for the same customer. https://github.com/new-dummy-user/HoorayTalk/issues/13
+        */
 
-        SendMessageRequest sendMessageRequest = buildSendMessageRequest(messageDto, tenantModel.getAdminBot(), adminChatId);
+        customerChatIdLocks.putIfAbsent(messageDto.getCustomerChatId(), new ReentrantLock());
 
-        SendMessageResponse sendMessageResponse = this.adminAdapterMessageService.sendMessageToAdmin(sendMessageRequest);
+        Lock lock = customerChatIdLocks.get(messageDto.getCustomerChatId());
 
-        chatModel = this.createChatModelIfNotExists(sendMessageResponse.getAdminChatId(), messageDto.getCustomerChatId(), tenantModel, chatModel);
+        lock.lock();
+        try {
+            chatModel = getChatModel(messageDto).orElseGet(() -> null);
+
+            String adminChatId = getAdminChatId(chatModel).orElseGet(() -> null);
+
+            SendMessageRequest sendMessageRequest = buildSendMessageRequest(messageDto, tenantModel.getAdminBot(), adminChatId);
+
+            SendMessageResponse sendMessageResponse = this.adminAdapterMessageService.sendMessageToAdmin(sendMessageRequest);
+
+            chatModel = this.createChatModelIfNotExists(sendMessageResponse.getAdminChatId(), messageDto.getCustomerChatId(), tenantModel, chatModel);
+        } finally {
+            lock.unlock();
+            customerChatIdLocks.remove(messageDto.getCustomerChatId());
+        }
 
         MessageModel messageModel = new MessageModel(chatModel, MessageRole.CUSTOMER, messageDto.getMessage());
 
