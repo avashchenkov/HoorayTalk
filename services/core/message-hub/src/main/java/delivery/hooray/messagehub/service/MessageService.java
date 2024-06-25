@@ -173,7 +173,10 @@ public class MessageService {
     }
 
     protected Optional<ChatModel> getChatModel(MessageFromCustomerAdapterDto messageFromCustomerAdapterDto) {
-        return Optional.ofNullable(chatRepository.findByCustomerChatId(messageFromCustomerAdapterDto.getCustomerChatId()));
+        TenantModel tenant = getTenantModel(messageFromCustomerAdapterDto).orElse(null);
+        String customerChatId = messageFromCustomerAdapterDto.getCustomerChatId();
+
+        return Optional.ofNullable(chatRepository.findByCustomerChatIdAndTenant(customerChatId, tenant));
     }
 
     protected Optional<TenantModel> getTenantModel(MessageFromCustomerAdapterDto messageFromCustomerAdapterDto) {

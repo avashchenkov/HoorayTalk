@@ -49,7 +49,7 @@ public class TelegramCommandService {
     }
 
     private void handleStartCommand(MessageFromCustomerAdapterDto messageDto) {
-        ChatModel chatModel = chatRepository.findByCustomerChatId(messageDto.getCustomerChatId());
+        ChatModel chatModel = getChatModel(messageDto);
         TenantModel tenantModel = tenantRepository.findByCustomerBot_Id(messageDto.getBotId());
 
         if (chatModel != null && tenantModel != null) {
@@ -60,7 +60,7 @@ public class TelegramCommandService {
     }
 
     private void handleNewOrderCommand(MessageFromCustomerAdapterDto messageDto) {
-        ChatModel chatModel = chatRepository.findByCustomerChatId(messageDto.getCustomerChatId());
+        ChatModel chatModel = getChatModel(messageDto);
         TenantModel tenantModel = tenantRepository.findByCustomerBot_Id(messageDto.getBotId());
 
         if (chatModel != null && tenantModel != null) {
@@ -68,6 +68,13 @@ public class TelegramCommandService {
         } else {
             throw new RuntimeException("Chat or tenant not found");
         }
+    }
+
+    private ChatModel getChatModel(MessageFromCustomerAdapterDto messageDto) {
+        String customerChatId = messageDto.getCustomerChatId();
+        TenantModel tenantModel = tenantRepository.findByCustomerBot_Id(messageDto.getBotId());
+
+        return chatRepository.findByCustomerChatIdAndTenant(customerChatId, tenantModel);
     }
 
     private void resetAiAssistantInstruction(ChatModel chatModel, AiAssistantInstructionModel instruction) {
