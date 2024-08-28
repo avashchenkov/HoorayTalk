@@ -336,4 +336,23 @@
         </sql>
     </changeSet>
 
+    <changeSet id="20" author="new-dummy-user">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="tenant"/>
+                <columnExists tableName="tenant" columnName="user_ai_assistant_instruction_id"/>
+                <sqlCheck expectedResult="0">
+                    SELECT COUNT(*) FROM information_schema.columns
+                    WHERE table_name = 'tenant'
+                    AND column_name = 'user_ai_assistant_instruction_id'
+                    AND is_nullable = 'YES'
+                </sqlCheck>
+            </and>
+        </preConditions>
+        <sql>
+            ALTER TABLE tenant
+                ALTER COLUMN user_ai_assistant_instruction_id SET NOT NULL;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
