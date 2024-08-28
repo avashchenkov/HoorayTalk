@@ -35,6 +35,10 @@ public class TenantModel {
     @JoinColumn(name = "ai_assistant_id", nullable = false)
     private AiAssistantModel aiAssistant;
 
+    @ManyToOne
+    @JoinColumn(name = "user_ai_assistant_instruction_id")
+    private UserAiAssistantInstructionModel userAiAssistantInstruction;
+
     public UUID getId() {
         return id;
     }
@@ -45,6 +49,14 @@ public class TenantModel {
 
     public AiAssistantInstructionModel getAiAssistantStartInstruction() {
         return aiAssistantStartInstruction;
+    }
+
+    public UserAiAssistantInstructionModel getUserAiAssistantInstruction() {
+        return userAiAssistantInstruction;
+    }
+
+    public void setUserAiAssistantInstruction(UserAiAssistantInstructionModel userAiAssistantInstruction) {
+        this.userAiAssistantInstruction = userAiAssistantInstruction;
     }
 
     public CustomerBotModel getCustomerBot() {
