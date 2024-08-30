@@ -4,6 +4,7 @@ import delivery.hooray.botadapterspringbootstarter.service.EncryptionService;
 import delivery.hooray.sharedlib.Message;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
@@ -164,6 +165,16 @@ public class DiscordBotImpl extends ListenerAdapter {
             );
 
             this.getDiscordBot().sendMsgToMessageHub(data);
+        } else if (channel.getType() == ChannelType.PRIVATE) {
+            User author = event.getAuthor();
+            Guild guild = jda.getGuildById(discordBot.getGuildId());
+
+            if (guild.isMember(author)) {
+                //TODO: send new User Ai Assistant Instruction to the message hub
+            } else {
+                System.out.println("User is not a member of the server. Ignoring the private message.");
+                //TODO: implement logging
+            }
         }
     }
 
