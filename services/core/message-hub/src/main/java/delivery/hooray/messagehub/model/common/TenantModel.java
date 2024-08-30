@@ -37,7 +37,7 @@ public class TenantModel {
 
     @ManyToOne
     @JoinColumn(name = "user_ai_assistant_instruction_id")
-    private UserAiAssistantInstructionModel userAiAssistantInstruction;
+    private AdminAiAssistantInstructionModel userAiAssistantInstruction;
 
     public UUID getId() {
         return id;
@@ -51,11 +51,11 @@ public class TenantModel {
         return aiAssistantStartInstruction;
     }
 
-    public UserAiAssistantInstructionModel getUserAiAssistantInstruction() {
+    public AdminAiAssistantInstructionModel getUserAiAssistantInstruction() {
         return userAiAssistantInstruction;
     }
 
-    public void setUserAiAssistantInstruction(UserAiAssistantInstructionModel userAiAssistantInstruction) {
+    public void setUserAiAssistantInstruction(AdminAiAssistantInstructionModel userAiAssistantInstruction) {
         this.userAiAssistantInstruction = userAiAssistantInstruction;
     }
 

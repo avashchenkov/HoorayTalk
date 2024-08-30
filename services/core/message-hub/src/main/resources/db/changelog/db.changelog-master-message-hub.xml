@@ -355,4 +355,13 @@
         </sql>
     </changeSet>
 
+    <changeSet id="21" author="new-dummy-user">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="user_ai_assistant_instruction"/>
+        </preConditions>
+        <sql>
+            ALTER TABLE user_ai_assistant_instruction RENAME TO admin_ai_assistant_instruction;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

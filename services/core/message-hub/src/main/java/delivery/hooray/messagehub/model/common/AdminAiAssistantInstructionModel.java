@@ -6,10 +6,10 @@ import java.util.UUID;
 
 
 @Entity
-@Table(name = "user_ai_assistant_instruction")
-public class UserAiAssistantInstructionModel {
+@Table(name = "admin_ai_assistant_instruction")
+public class AdminAiAssistantInstructionModel {
 
-    protected UserAiAssistantInstructionModel() {}
+    protected AdminAiAssistantInstructionModel() {}
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface UserAiAssistantInstructionRepository extends JpaRepository<AiAssistantInstructionModel, UUID> {
+public interface AdminAiAssistantInstructionRepository extends JpaRepository<AiAssistantInstructionModel, UUID> {
 }
