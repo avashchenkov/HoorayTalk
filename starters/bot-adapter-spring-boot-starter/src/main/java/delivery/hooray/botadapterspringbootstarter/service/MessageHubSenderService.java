@@ -29,11 +29,11 @@ public class MessageHubSenderService {
         this.messageHubApiKey = messageHubApiKey;
     }
 
-    public Mono<String> sendMessage(MessageToMessageHubRequestData messageFromCustomer) {
+    public Mono<String> sendMessage(MessageToMessageHubRequestData message) {
         return webClient.post()
                 .uri(url)
                 .header("X-API-KEY", messageHubApiKey)
-                .bodyValue(messageFromCustomer)
+                .bodyValue(message)
                 .retrieve()
                 .onStatus(status -> status.isError(), response -> response.bodyToMono(String.class).flatMap(body -> Mono.error(new RuntimeException("Error from server: " + body))))
                 .bodyToMono(String.class)
