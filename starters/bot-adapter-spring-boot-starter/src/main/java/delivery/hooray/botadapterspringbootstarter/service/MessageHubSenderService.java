@@ -12,7 +12,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Service
-@ConditionalOnMissingBean
 public class MessageHubSenderService {
     protected static final Logger logger = LoggerFactory.getLogger(MessageHubSenderService.class);
     protected final WebClient webClient;
