@@ -51,11 +51,11 @@ public class TenantModel {
         return aiAssistantStartInstruction;
     }
 
-    public AdminAiAssistantInstructionModel getUserAiAssistantInstruction() {
+    public AdminAiAssistantInstructionModel getAdminAiAssistantInstruction() {
         return userAiAssistantInstruction;
     }
 
-    public void setUserAiAssistantInstruction(AdminAiAssistantInstructionModel userAiAssistantInstruction) {
+    public void setAdminAiAssistantInstruction(AdminAiAssistantInstructionModel userAiAssistantInstruction) {
         this.userAiAssistantInstruction = userAiAssistantInstruction;
     }
 

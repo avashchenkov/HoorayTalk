@@ -9,7 +9,7 @@ import java.util.UUID;
 @Table(name = "admin_ai_assistant_instruction")
 public class AdminAiAssistantInstructionModel {
 
-    protected AdminAiAssistantInstructionModel() {}
+    public AdminAiAssistantInstructionModel() {}
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
