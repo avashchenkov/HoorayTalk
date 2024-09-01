@@ -4,7 +4,6 @@ import delivery.hooray.botadapterspringbootstarter.bot.Bot;
 import delivery.hooray.botadapterspringbootstarter.service.BotBehavior;
 import delivery.hooray.botadapterspringbootstarter.service.EncryptionService;
 import delivery.hooray.botadapterspringbootstarter.service.MessageHubSenderService;
-import delivery.hooray.discordadapter.service.DiscordToMessageHubSenderService;
 
 /**
  * Represents a Discord bot that can send and receive messages.
@@ -12,7 +11,6 @@ import delivery.hooray.discordadapter.service.DiscordToMessageHubSenderService;
 public class DiscordBot extends Bot {
     private final DiscordBotImpl discordBotImpl;
     private String guildId;
-    private final DiscordToMessageHubSenderService messageHubSenderService;
 
     public DiscordBot(MessageHubSenderService messageHubSenderService,
                       BotBehavior botBehavior,
@@ -20,7 +18,6 @@ public class DiscordBot extends Bot {
         super(messageHubSenderService, botBehavior, encryptionService);
 
         this.discordBotImpl = new DiscordBotImpl(this);
-        this.messageHubSenderService = (DiscordToMessageHubSenderService) messageHubSenderService;
     }
 
     @Override
@@ -44,12 +41,7 @@ public class DiscordBot extends Bot {
         return this.encryptionService;
     }
 
-    public void sendInstructionToMessageHub(InstructionToMessageHubRequestData instruction) {
-        this.messageHubSenderService.sendInstruction(instruction)
-                .subscribe(response -> {
-                    System.out.println("Operation successful: " + response);
-                }, (error) -> {
-                    System.err.println("Operation failed: " + error.getMessage());
-                });
+    public DiscordBotBehavior getBotBehavior() {
+        return (DiscordBotBehavior) this.botBehavior;
     }
 }

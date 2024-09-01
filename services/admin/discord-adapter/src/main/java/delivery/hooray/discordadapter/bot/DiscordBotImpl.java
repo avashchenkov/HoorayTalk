@@ -170,12 +170,11 @@ public class DiscordBotImpl extends ListenerAdapter {
             Guild guild = jda.getGuildById(discordBot.getGuildId());
 
             if (guild.isMember(author)) {
-                //TODO: send new User Ai Assistant Instruction to the message hub
                 InstructionToMessageHubRequestData instructionToMessageHubRequestData =
                         new InstructionToMessageHubRequestData(this.getBotId().toString(),
                                                      event.getMessage().getContentDisplay());
 
-                this.getDiscordBot().sendInstructionToMessageHub(instructionToMessageHubRequestData);
+                this.getDiscordBot().getBotBehavior().saveAdminAIAssistantInstruction(instructionToMessageHubRequestData);
             } else {
                 System.out.println("User is not a member of the server. Ignoring the private message.");
                 //TODO: implement logging

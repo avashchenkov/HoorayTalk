@@ -3,10 +3,18 @@ package delivery.hooray.discordadapter.bot;
 import delivery.hooray.botadapterspringbootstarter.bot.Bot;
 import delivery.hooray.botadapterspringbootstarter.bot.MessageToBotEndUserRequestData;
 import delivery.hooray.botadapterspringbootstarter.service.BotBehavior;
+import delivery.hooray.discordadapter.service.AdminAiAssistantInstructionSenderService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class DiscordBotBehavior implements BotBehavior {
+    private final AdminAiAssistantInstructionSenderService adminAiAssistantInstructionSenderService;
+
+    @Autowired
+    public DiscordBotBehavior(AdminAiAssistantInstructionSenderService adminAiAssistantInstructionSenderService) {
+        this.adminAiAssistantInstructionSenderService = adminAiAssistantInstructionSenderService;
+    }
 
     /**
      * @param bot
@@ -31,5 +39,9 @@ public class DiscordBotBehavior implements BotBehavior {
     @Override
     public Class<? extends Bot> getBotClass() {
         return DiscordBot.class;
+    }
+
+    public void saveAdminAIAssistantInstruction(InstructionToMessageHubRequestData instruction) {
+        adminAiAssistantInstructionSenderService.sendInstruction(instruction).subscribe();
     }
 }

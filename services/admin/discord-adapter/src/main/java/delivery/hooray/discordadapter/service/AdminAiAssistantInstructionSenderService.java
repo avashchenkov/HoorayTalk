@@ -1,24 +1,30 @@
 package delivery.hooray.discordadapter.service;
 
 import delivery.hooray.botadapterspringbootstarter.config.WebClientConfig;
-import delivery.hooray.botadapterspringbootstarter.service.MessageHubSenderService;
 import delivery.hooray.discordadapter.bot.InstructionToMessageHubRequestData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Service
-public class DiscordToMessageHubSenderService extends MessageHubSenderService {
+public class AdminAiAssistantInstructionSenderService{
+    protected static final Logger logger = LoggerFactory.getLogger(AdminAiAssistantInstructionSenderService.class);
     protected String messageHubInstructionPath;
+    protected String messageHubUrl;
+    protected String messageHubApiKey;
+    protected WebClient webClient;
 
-    public DiscordToMessageHubSenderService(WebClientConfig webClientConfig,
+    public AdminAiAssistantInstructionSenderService(WebClientConfig webClientConfig,
                                             @Value("${MESSAGE_HUB_URL}") String messageHubUrl,
-                                            @Value("${MESSAGE_HUB_MESSAGE_PATH}") String messageHubMessagePath,
                                             @Value("${MESSAGE_HUB_INSTRUCTION_PATH}") String messageHubInstructionPath,
                                             @Value("${MESSAGE_HUB_API_KEY}") String messageHubApiKey) {
-        super(webClientConfig, messageHubUrl, messageHubMessagePath, messageHubApiKey);
-
+        this.webClient = webClientConfig.getWebClient();
+        this.messageHubUrl = messageHubUrl;
         this.messageHubInstructionPath = messageHubInstructionPath;
+        this.messageHubApiKey = messageHubApiKey;
     }
 
     public Mono<String> sendInstruction(InstructionToMessageHubRequestData message) {
