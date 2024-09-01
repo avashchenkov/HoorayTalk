@@ -364,4 +364,17 @@
         </sql>
     </changeSet>
 
+    <changeSet id="22" author="new-dummy-user">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="tenant"/>
+                <columnExists tableName="tenant" columnName="user_ai_assistant_instruction_id"/>
+            </and>
+        </preConditions>
+        <sql>
+            ALTER TABLE tenant
+                RENAME COLUMN user_ai_assistant_instruction_id TO admin_ai_assistant_instruction_id;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

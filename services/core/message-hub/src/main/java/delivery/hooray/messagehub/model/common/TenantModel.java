@@ -36,7 +36,7 @@ public class TenantModel {
     private AiAssistantModel aiAssistant;
 
     @ManyToOne
-    @JoinColumn(name = "user_ai_assistant_instruction_id")
+    @JoinColumn(name = "admin_ai_assistant_instruction_id")
     private AdminAiAssistantInstructionModel userAiAssistantInstruction;
 
     public UUID getId() {
