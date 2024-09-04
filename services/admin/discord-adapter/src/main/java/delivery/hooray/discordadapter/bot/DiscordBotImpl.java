@@ -141,7 +141,7 @@ public class DiscordBotImpl extends ListenerAdapter {
     public void run() {
         JDABuilder builder = JDABuilder.createDefault(discordBot.getBotToken());
 
-        builder.enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT);
+        builder.enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MEMBERS);
 
         builder.addEventListeners(discordBot.getDiscordBotImpl());
         this.jda = builder.build();
@@ -169,16 +169,21 @@ public class DiscordBotImpl extends ListenerAdapter {
             User author = event.getAuthor();
             Guild guild = jda.getGuildById(discordBot.getGuildId());
 
-            if (guild.isMember(author)) {
-                InstructionToMessageHubRequestData instructionToMessageHubRequestData =
-                        new InstructionToMessageHubRequestData(this.getBotId().toString(),
-                                                     event.getMessage().getContentDisplay());
+            guild.loadMembers().onSuccess(members -> {
+                if (guild.isMember(author)) {
+                    InstructionToMessageHubRequestData instructionData = new InstructionToMessageHubRequestData(
+                            this.getBotId().toString(),
+                            event.getMessage().getContentDisplay()
+                    );
 
-                this.getDiscordBot().getBotBehavior().saveAdminAIAssistantInstruction(instructionToMessageHubRequestData);
-            } else {
-                System.out.println("User is not a member of the server. Ignoring the private message.");
-                //TODO: implement logging
-            }
+                    this.getDiscordBot().getBotBehavior().saveAdminAIAssistantInstruction(instructionData);
+                } else {
+                    System.out.println("User is not a member of the server. Ignoring the private message.");
+                    // TODO: implement logging
+                }
+            }).onError(throwable -> {
+                System.err.println("Error loading guild members: " + throwable.getMessage());  //TODO: implement logging
+            });
         }
     }
 
