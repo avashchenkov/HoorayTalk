@@ -170,7 +170,9 @@ public class DiscordBotImpl extends ListenerAdapter {
             Guild guild = jda.getGuildById(discordBot.getGuildId());
 
             guild.loadMembers().onSuccess(members -> {
-                if (guild.isMember(author)) {
+                boolean isMember = members.stream().anyMatch(member -> member.getUser().equals(author));
+
+                if (isMember) {
                     InstructionToMessageHubRequestData instructionData = new InstructionToMessageHubRequestData(
                             this.getBotId().toString(),
                             event.getMessage().getContentDisplay()
@@ -182,7 +184,7 @@ public class DiscordBotImpl extends ListenerAdapter {
                     // TODO: implement logging
                 }
             }).onError(throwable -> {
-                System.err.println("Error loading guild members: " + throwable.getMessage());  //TODO: implement logging
+                System.err.println("Error loading guild members: " + throwable.getMessage());
             });
         }
     }
