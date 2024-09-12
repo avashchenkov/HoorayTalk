@@ -282,4 +282,99 @@
         </sql>
     </changeSet>
 
+    <changeSet id="17" author="new-dummy-user">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="user_ai_assistant_instruction"/>
+            </not>
+        </preConditions>
+        <sql>
+            CREATE TABLE user_ai_assistant_instruction
+            (
+                id               UUID         NOT NULL,
+                instruction_text VARCHAR(255) NOT NULL,
+                CONSTRAINT pk_user_ai_assistant_instruction PRIMARY KEY (id)
+            );
+        </sql>
+    </changeSet>
+
+    <changeSet id="18" author="new-dummy-user">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="tenant"/>
+                <tableExists tableName="user_ai_assistant_instruction"/>
+                <not>
+                    <columnExists tableName="tenant" columnName="user_ai_assistant_instruction_id"/>
+                </not>
+            </and>
+        </preConditions>
+        <sql>
+            ALTER TABLE tenant
+                ADD COLUMN user_ai_assistant_instruction_id UUID;
+
+            ALTER TABLE tenant
+                ADD CONSTRAINT FK_TENANT_ON_USER_AI_ASSISTANT_INSTRUCTION FOREIGN KEY (user_ai_assistant_instruction_id) REFERENCES user_ai_assistant_instruction (id);
+        </sql>
+    </changeSet>
+
+    <changeSet id="19" author="new-dummy-user">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="user_ai_assistant_instruction"/>
+                <columnExists tableName="user_ai_assistant_instruction" columnName="instruction_text"/>
+                <sqlCheck expectedResult="0">
+                    SELECT COUNT(*) FROM information_schema.columns
+                    WHERE table_name = 'user_ai_assistant_instruction'
+                    AND column_name = 'instruction_text'
+                    AND is_nullable = 'YES'
+                </sqlCheck>
+            </and>
+        </preConditions>
+        <sql>
+            ALTER TABLE user_ai_assistant_instruction
+                ALTER COLUMN instruction_text SET NOT NULL;
+        </sql>
+    </changeSet>
+
+    <changeSet id="20" author="new-dummy-user">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="tenant"/>
+                <columnExists tableName="tenant" columnName="user_ai_assistant_instruction_id"/>
+                <sqlCheck expectedResult="0">
+                    SELECT COUNT(*) FROM information_schema.columns
+                    WHERE table_name = 'tenant'
+                    AND column_name = 'user_ai_assistant_instruction_id'
+                    AND is_nullable = 'YES'
+                </sqlCheck>
+            </and>
+        </preConditions>
+        <sql>
+            ALTER TABLE tenant
+                ALTER COLUMN user_ai_assistant_instruction_id SET NOT NULL;
+        </sql>
+    </changeSet>
+
+    <changeSet id="21" author="new-dummy-user">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="user_ai_assistant_instruction"/>
+        </preConditions>
+        <sql>
+            ALTER TABLE user_ai_assistant_instruction RENAME TO admin_ai_assistant_instruction;
+        </sql>
+    </changeSet>
+
+    <changeSet id="22" author="new-dummy-user">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="tenant"/>
+                <columnExists tableName="tenant" columnName="user_ai_assistant_instruction_id"/>
+            </and>
+        </preConditions>
+        <sql>
+            ALTER TABLE tenant
+                RENAME COLUMN user_ai_assistant_instruction_id TO admin_ai_assistant_instruction_id;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

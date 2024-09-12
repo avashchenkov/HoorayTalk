@@ -40,4 +40,8 @@ public class DiscordBot extends Bot {
     public EncryptionService getEncryptionService() {
         return this.encryptionService;
     }
+
+    public DiscordBotBehavior getBotBehavior() {
+        return (DiscordBotBehavior) this.botBehavior;
+    }
 }

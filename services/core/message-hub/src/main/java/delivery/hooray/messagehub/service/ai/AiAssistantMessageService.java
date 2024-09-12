@@ -57,7 +57,8 @@ public class AiAssistantMessageService {
 
         completeChatRequest.setRecentMessages(currentOrderMessages);
 
-        String systemPrompt = chatModel.getAiAssistantInstruction().getText();
+        String systemPrompt = chatModel.getAiAssistantInstruction().getText() + "\n" +
+                              chatModel.getTenant().getAdminAiAssistantInstruction().getText();
 
         completeChatRequest.setSystemMessage(systemPrompt);
 

@@ -4,6 +4,7 @@ import delivery.hooray.botadapterspringbootstarter.service.EncryptionService;
 import delivery.hooray.sharedlib.Message;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
@@ -140,7 +141,7 @@ public class DiscordBotImpl extends ListenerAdapter {
     public void run() {
         JDABuilder builder = JDABuilder.createDefault(discordBot.getBotToken());
 
-        builder.enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT);
+        builder.enableIntents(GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MEMBERS);
 
         builder.addEventListeners(discordBot.getDiscordBotImpl());
         this.jda = builder.build();
@@ -164,6 +165,27 @@ public class DiscordBotImpl extends ListenerAdapter {
             );
 
             this.getDiscordBot().sendMsgToMessageHub(data);
+        } else if (channel.getType() == ChannelType.PRIVATE) {
+            User author = event.getAuthor();
+            Guild guild = jda.getGuildById(discordBot.getGuildId());
+
+            guild.loadMembers().onSuccess(members -> {
+                boolean isMember = members.stream().anyMatch(member -> member.getUser().equals(author));
+
+                if (isMember) {
+                    InstructionToMessageHubRequestData instructionData = new InstructionToMessageHubRequestData(
+                            this.getBotId().toString(),
+                            event.getMessage().getContentDisplay()
+                    );
+
+                    this.getDiscordBot().getBotBehavior().saveAdminAIAssistantInstruction(instructionData);
+                } else {
+                    System.out.println("User is not a member of the server. Ignoring the private message.");
+                    // TODO: implement logging
+                }
+            }).onError(throwable -> {
+                System.err.println("Error loading guild members: " + throwable.getMessage());
+            });
         }
     }
 
